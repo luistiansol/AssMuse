@@ -272,7 +272,7 @@
   </div>
 
   <div class="title">Muse</div>
-  <div class="subtitle-hint">accounts.meta.com</div>
+  <div class="subtitle-hint">meta.ai (Chats Activos)</div>
 
   <div class="hw-bar">
     <button id="btnFull" class="hw-btn" onclick="toggleFull()">FULL</button>
@@ -309,8 +309,8 @@
   <div id="toast" class="toast">Copiado al portapapeles</div>
 
   <script>
-    // Enlace directo al centro de cuentas de Meta / sesión activa de Muse
-    const MUSE_LOGIN_URL = "https://accounts.meta.com/";
+    // URL directa al chat web autenticado de Meta AI / Muse para recuperar historial y conversaciones previas
+    const MUSE_CHAT_URL = "https://www.meta.ai/";
     let wakeLock = null;
 
     const defaultTasks = [
@@ -397,7 +397,7 @@
 
     function openMuseAgent() {
       vibrate(50);
-      window.location.href = MUSE_LOGIN_URL;
+      window.location.href = MUSE_CHAT_URL;
     }
 
     async function copyAndLaunch(promptText) {
@@ -407,12 +407,12 @@
         showToast('Copiado. Abriendo...');
       } catch (err) {}
       setTimeout(() => {
-        window.location.href = MUSE_LOGIN_URL;
+        window.location.href = MUSE_CHAT_URL;
       }, 500);
     }
 
     function loadTasks() {
-      const saved = JSON.parse(localStorage.getItem('muse_watch_tasks_v2')) || defaultTasks;
+      const saved = JSON.parse(localStorage.getItem('muse_watch_tasks_v3')) || defaultTasks;
       const container = document.getElementById('taskList');
       container.innerHTML = '';
       saved.forEach((task, idx) => {
@@ -426,9 +426,9 @@
 
     function toggleTask(index) {
       vibrate(25);
-      const saved = JSON.parse(localStorage.getItem('muse_watch_tasks_v2')) || defaultTasks;
+      const saved = JSON.parse(localStorage.getItem('muse_watch_tasks_v3')) || defaultTasks;
       saved[index].done = !saved[index].done;
-      localStorage.setItem('muse_watch_tasks_v2', JSON.stringify(saved));
+      localStorage.setItem('muse_watch_tasks_v3', JSON.stringify(saved));
       loadTasks();
     }
 
