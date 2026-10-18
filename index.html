@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Muse Agent Watch</title>
+  <style>
+    :root {
+      --bg: #000000;
+      --card: #12151e;
+      --muse-blue: #1877f2;
+      --muse-cream: #f3e5ab;
+      --accent-glow: #4da3ff;
+      --text: #ffffff;
+      --muted: #8e9bae;
+      --ok: #00e676;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      /* Margen seguro para bisel circular de Galaxy Watch */
+      padding: 10% 7% 16% 7%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin-bottom: 8px;
+    }
+
+    /* Emblema inspirado en el icono 'm' cursiva de Muse */
+    .muse-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fffdf5, #d9c398);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-weight: 900;
+      font-size: 0.95rem;
+      color: var(--muse-blue);
+      box-shadow: 0 0 8px rgba(24, 119, 242, 0.6);
+    }
+
+    .title {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--text);
+    }
+
+    .subtitle-domain {
+      font-size: 0.65rem;
+      color: var(--accent-glow);
+      font-weight: 700;
+      margin-top: -4px;
+      margin-bottom: 8px;
+    }
+
+    /* Controles de hardware del reloj */
+    .hw-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .hw-btn {
+      background: var(--card);
+      border: 1px solid #252e42;
+      color: var(--muted);
+      border-radius: 16px;
+      padding: 8px 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .hw-btn.active {
+      border-color: var(--ok);
+      color: var(--ok);
+      background: rgba(0, 230, 118, 0.12);
+    }
+
+    /* Boton directo a muse.ai */
+    .launch-main {
+      width: 100%;
+      background: linear-gradient(135deg, #1877f2, #0051c4);
+      color: #fff;
+      border: 1px solid var(--accent-glow);
+      border-radius: 22px;
+      padding: 13px 10px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      box-shadow: 0 4px 14px rgba(24, 119, 242, 0.45);
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .launch-main:active {
+      transform: scale(0.96);
+    }
+
+    .section-label {
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      margin: 6px 0;
+    }
+
+    /* Comandos 1-Toque para el Agente Muse */
+    .prompt-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .prompt-btn {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid #1f283a;
+      border-left: 3px solid var(--muse-cream);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 10px 8px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .prompt-btn:active {
+      background: #1c2538;
+      transform: scale(0.98);
+    }
+
+    .badge {
+      font-size: 0.62rem;
+      background: rgba(24, 119, 242, 0.25);
+      color: var(--accent-glow);
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-weight: 800;
+      margin-left: 4px;
+      white-space: nowrap;
+    }
+
+    /* Checklist local en el reloj */
+    .task-box {
+      width: 100%;
+      background: var(--card);
+      border-radius: 14px;
+      padding: 8px;
+      border: 1px solid #1f283a;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 4px;
+      border-bottom: 1px solid #1b2230;
+      font-size: 0.75rem;
+    }
+
+    .task-item:last-child {
+      border-bottom: none;
+    }
+
+    .task-item.done span {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--ok);
+      color: #000;
+      font-weight: 800;
+      font-size: 0.72rem;
+      padding: 6px 12px;
+      border-radius: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 99;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="muse-badge">m</div>
+    <div class="title">MUSE AGENT</div>
+  </div>
+  <div class="subtitle-domain">muse.ai • Reloj en Vivo</div>
+
+  <!-- Controles de Hardware para Galaxy Watch -->
+  <div class="hw-bar">
+    <button id="btnFull" class="hw-btn" onclick="toggleFull()">PANTALLA FULL</button>
+    <button id="btnWake" class="hw-btn" onclick="toggleWake()">MANTENER ON</button>
+  </div>
+
+  <!-- Apertura directa del asistente Muse (NO Meta AI) -->
+  <button class="launch-main" onclick="openMuseAgent()">
+    ABRIR ASISTENTE MUSE
+  </button>
+
+  <div class="section-label">Control de Agente 1-Toque (Copia + Abre)</div>
+
+  <div class="prompt-grid">
+    <button class="prompt-btn" onclick="copyAndLaunch('Dame un resumen de máximo 3 líneas para leer en mi reloj sobre el estado de las tareas y subagentes que estás ejecutando en segundo plano.')">
+      <span>Tareas activas en 2do plano</span>
+      <span class="badge">MUSE</span>
+    </button>
+
+    <button class="prompt-btn" onclick="copyAndLaunch('Muéstrame si tienes alguna acción o conector esperando mi aprobación y dime qué necesitas para continuar.')">
+      <span>Revisar aprobaciones pendientes</span>
+      <span class="badge">OK</span>
+    </button>
+
+    <button class="prompt-btn" onclick="copyAndLaunch('Actualiza mi progreso en Goals: ya completé el paso actual, indícame cuál es la siguiente tarea en Upcoming.')">
+      <span>Siguiente paso en Goals</span>
+      <span class="badge">GO</span>
+    </button>
+
+    <button class="prompt-btn" onclick="copyAndLaunch('Lístame los últimos archivos o documentos que terminaste de crear en Library con un resumen corto.')">
+      <span>Ver archivos listos en Library</span>
+      <span class="badge">DOC</span>
+    </button>
+  </div>
+
+  <div class="section-label">Verificación Rápida en Muñeca</div>
+  <div class="task-box" id="taskList"></div>
+
+  <div id="toast" class="toast">Copiado. Abriendo muse.ai...</div>
+
+  <script>
+    // URL exclusiva del agente Muse (separado de meta.ai)
+    const MUSE_AGENT_URL = "https://muse.ai/";
+    let wakeLock = null;
+
+    const defaultTasks = [
+      { id: 1, text: "Sesión iniciada en muse.ai", done: true },
+      { id: 2, text: "Revisar tarea en ejecución", done: false },
+      { id: 3, text: "Aprobar acción del agente", done: false }
+    ];
+
+    function vibrate(ms = 40) {
+      if (navigator.vibrate) navigator.vibrate(ms);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 1800);
+    }
+
+    function toggleFull() {
+      vibrate(35);
+      const btn = document.getElementById('btnFull');
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().then(() => {
+          btn.classList.add('active');
+        }).catch(() => {});
+      } else {
+        document.exitFullscreen();
+        btn.classList.remove('active');
+      }
+    }
+
+    async function toggleWake() {
+      vibrate(35);
+      const btn = document.getElementById('btnWake');
+      if ('wakeLock' in navigator) {
+        if (!wakeLock) {
+          try {
+            wakeLock = await navigator.wakeLock.request('screen');
+            btn.classList.add('active');
+            showToast('Pantalla siempre activa');
+          } catch (e) {
+            showToast('Activa brillo en reloj');
+          }
+        } else {
+          wakeLock.release();
+          wakeLock = null;
+          btn.classList.remove('active');
+        }
+      } else {
+        showToast('WakeLock no soportado');
+      }
+    }
+
+    function openMuseAgent() {
+      vibrate(60);
+      window.location.href = MUSE_AGENT_URL;
+    }
+
+    async function copyAndLaunch(promptText) {
+      vibrate([40, 50, 40]);
+      try {
+        await navigator.clipboard.writeText(promptText);
+        showToast('Copiado. Pega en Muse');
+      } catch (err) {
+        showToast('Abriendo muse.ai...');
+      }
+      setTimeout(() => {
+        window.location.href = MUSE_AGENT_URL;
+      }, 650);
+    }
+
+    function loadTasks() {
+      const saved = JSON.parse(localStorage.getItem('muse_agent_watch_tasks')) || defaultTasks;
+      const container = document.getElementById('taskList');
+      container.innerHTML = '';
+      saved.forEach((task, idx) => {
+        const row = document.createElement('div');
+        row.className = 'task-item' + (task.done ? ' done' : '');
+        row.onclick = () => toggleTask(idx);
+        row.innerHTML = `
+          <span>${task.text}</span>
+          <strong>${task.done ? '✓' : '○'}</strong>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function toggleTask(index) {
+      vibrate(30);
+      const saved = JSON.parse(localStorage.getItem('muse_agent_watch_tasks')) || defaultTasks;
+      saved[index].done = !saved[index].done;
+      localStorage.setItem('muse_agent_watch_tasks', JSON.stringify(saved));
+      loadTasks();
+    }
+
+    loadTasks();
+  </script>
+</body>
+</html>
