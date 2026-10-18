@@ -8,20 +8,17 @@
   <title>Muse Agent Watch</title>
   <style>
     :root {
-      /* Tema OLED Oscuro con acentos exactos del avatar de Muse */
       --bg: #000000;
       --card: #141720;
       --card-border: #2a2f3d;
       --muse-cream: #ead8b8;
       --muse-cream-light: #f7efe0;
-      --muse-cream-shadow: #c8b08a;
       --muse-blue: #1877f2;
       --text: #ffffff;
       --muted: #9aa4b5;
       --ok: #00e676;
     }
 
-    /* Tema Claro Crema idéntico a la estética cálida de Muse */
     body.light-muse {
       --bg: #f4efe6;
       --card: #ffffff;
@@ -41,30 +38,27 @@
     body {
       background-color: var(--bg);
       color: var(--text);
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-      padding: 8% 7% 16% 7%;
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 10px 12px 60px 12px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       text-align: center;
-      overflow-x: hidden;
-      transition: background-color 0.25s ease, color 0.25s ease;
     }
 
-    /* Contenedor del Avatar idéntico al perfil de Muse */
     .avatar-wrapper {
       position: relative;
-      width: 64px;
-      height: 64px;
-      margin-bottom: 6px;
+      width: 58px;
+      height: 58px;
+      margin: 4px auto;
       cursor: pointer;
     }
 
     .avatar-circle {
-      width: 64px;
-      height: 64px;
+      width: 58px;
+      height: 58px;
       border-radius: 50%;
       background: radial-gradient(circle at 50% 35%, #f5f6f8 0%, #dcdfe4 100%);
       border: 2px solid var(--muse-cream);
@@ -72,7 +66,7 @@
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
     }
 
     .avatar-circle img {
@@ -82,70 +76,61 @@
       display: none;
     }
 
-    .avatar-circle.custom-img svg {
-      display: none;
-    }
+    .avatar-circle.custom-img svg { display: none; }
+    .avatar-circle.custom-img img { display: block; }
 
-    .avatar-circle.custom-img img {
-      display: block;
-    }
-
-    /* Insignia circular blanca con la 'm' cursiva azul de Muse */
     .muse-corner-badge {
       position: absolute;
       bottom: -2px;
       right: -2px;
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       background: #ffffff;
       border: 1.5px solid #e4e6eb;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     }
 
     .muse-corner-badge span {
-      font-family: 'Georgia', 'Times New Roman', serif;
+      font-family: Georgia, serif;
       font-style: italic;
       font-weight: 900;
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       color: var(--muse-blue);
       line-height: 1;
-      letter-spacing: -0.5px;
-      transform: translateY(-1px);
     }
 
     .title {
-      font-size: 1.02rem;
+      font-size: 0.95rem;
       font-weight: 800;
-      letter-spacing: 0.3px;
       color: var(--text);
+      margin-top: 2px;
     }
 
     .subtitle-hint {
-      font-size: 0.62rem;
+      font-size: 0.58rem;
       color: var(--muted);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
-    /* Barra de hardware y tema para Galaxy Watch */
     .hw-bar {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 5px;
       width: 100%;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .hw-btn {
       background: var(--card);
       border: 1px solid var(--card-border);
       color: var(--muted);
-      border-radius: 14px;
-      padding: 7px 4px;
-      font-size: 0.66rem;
+      border-radius: 12px;
+      padding: 6px 4px;
+      font-size: 0.62rem;
       font-weight: 700;
       cursor: pointer;
     }
@@ -156,44 +141,39 @@
       background: rgba(0, 230, 118, 0.12);
     }
 
-    /* Boton principal con el estilo crema y azul de Muse */
     .launch-main {
       width: 100%;
       background: linear-gradient(135deg, var(--muse-cream-light), var(--muse-cream));
       color: #1c1e21;
       border: 2px solid var(--muse-blue);
-      border-radius: 22px;
-      padding: 12px 10px;
-      font-size: 0.88rem;
+      border-radius: 18px;
+      padding: 11px 8px;
+      font-size: 0.82rem;
       font-weight: 900;
-      box-shadow: 0 4px 14px rgba(24, 119, 242, 0.3);
-      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
+      margin-bottom: 8px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
     }
 
-    .launch-main:active {
-      transform: scale(0.96);
-    }
+    .launch-main:active { transform: scale(0.96); }
 
     .section-label {
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.6px;
       color: var(--muted);
-      margin: 5px 0;
+      margin: 4px 0;
+      width: 100%;
+      text-align: left;
+      padding-left: 4px;
     }
 
-    /* Tarjetas de seguimiento 1-Toque */
     .prompt-grid {
       display: flex;
       flex-direction: column;
-      gap: 7px;
+      gap: 6px;
       width: 100%;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .prompt-btn {
@@ -202,9 +182,9 @@
       border: 1px solid var(--card-border);
       border-left: 4px solid var(--muse-cream);
       color: var(--text);
-      border-radius: 14px;
-      padding: 10px 8px;
-      font-size: 0.76rem;
+      border-radius: 12px;
+      padding: 9px 8px;
+      font-size: 0.72rem;
       font-weight: 600;
       text-align: left;
       display: flex;
@@ -213,27 +193,23 @@
       cursor: pointer;
     }
 
-    .prompt-btn:active {
-      transform: scale(0.98);
-    }
+    .prompt-btn:active { transform: scale(0.98); background: #1c2230; }
 
     .badge {
-      font-size: 0.62rem;
+      font-size: 0.58rem;
       background: rgba(24, 119, 242, 0.18);
       color: var(--muse-blue);
-      padding: 2px 6px;
-      border-radius: 8px;
+      padding: 2px 5px;
+      border-radius: 6px;
       font-weight: 800;
-      margin-left: 4px;
       white-space: nowrap;
     }
 
-    /* Checklist rapido en reloj */
     .task-box {
       width: 100%;
       background: var(--card);
-      border-radius: 14px;
-      padding: 8px;
+      border-radius: 12px;
+      padding: 6px;
       border: 1px solid var(--card-border);
     }
 
@@ -241,31 +217,26 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 7px 4px;
+      padding: 6px 4px;
       border-bottom: 1px solid var(--card-border);
-      font-size: 0.75rem;
+      font-size: 0.7rem;
+      cursor: pointer;
     }
 
-    .task-item:last-child {
-      border-bottom: none;
-    }
-
-    .task-item.done span {
-      text-decoration: line-through;
-      color: var(--muted);
-    }
+    .task-item:last-child { border-bottom: none; }
+    .task-item.done span { text-decoration: line-through; color: var(--muted); }
 
     .toast {
       position: fixed;
-      bottom: 8%;
+      bottom: 6%;
       left: 50%;
       transform: translateX(-50%);
       background: var(--muse-blue);
       color: #fff;
       font-weight: 800;
-      font-size: 0.72rem;
-      padding: 6px 12px;
-      border-radius: 20px;
+      font-size: 0.68rem;
+      padding: 5px 10px;
+      border-radius: 16px;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s ease;
@@ -273,103 +244,79 @@
       white-space: nowrap;
     }
 
-    .toast.show {
-      opacity: 1;
-    }
+    .toast.show { opacity: 1; }
   </style>
 </head>
 <body>
 
-  <!-- Input oculto por si deseas subir la captura exacta de tu avatar editado -->
   <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
 
-  <!-- Avatar 3D de Muse + Insignia 'm' azul idéntico a tu captura -->
-  <div class="avatar-wrapper" onclick="document.getElementById('avatarInput').click()" title="Toca para subir foto de tu avatar">
+  <div class="avatar-wrapper" onclick="document.getElementById('avatarInput').click()">
     <div class="avatar-circle" id="avatarContainer">
-      <img id="customAvatarImg" alt="Mi Avatar Muse">
-      <!-- Personaje 3D crema de Muse en SVG con volumen -->
-      <svg viewBox="0 0 100 100" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+      <img id="customAvatarImg" alt="Avatar">
+      <svg viewBox="0 0 100 100" width="54" height="54" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <radialGradient id="furGrad" cx="42%" cy="32%" r="60%">
             <stop offset="0%" stop-color="#fbf3e4"/>
             <stop offset="55%" stop-color="#e7d4b5"/>
             <stop offset="100%" stop-color="#c5ab84"/>
           </radialGradient>
-          <radialGradient id="faceGrad" cx="50%" cy="45%" r="50%">
-            <stop offset="0%" stop-color="#e3caa5"/>
-            <stop offset="100%" stop-color="#cfafa0" stop-opacity="0.4"/>
-          </radialGradient>
         </defs>
-        <!-- Cuerpo y cabeza afelpada color crema de Muse -->
         <path d="M22,98 C18,68 25,22 50,22 C75,22 82,68 78,98 Z" fill="url(#furGrad)"/>
-        <!-- Brazos suaves laterales -->
-        <path d="M22,60 C12,68 12,88 20,96" fill="none" stroke="url(#furGrad)" stroke-width="12" stroke-linecap="round"/>
-        <path d="M78,60 C88,68 88,88 80,96" fill="none" stroke="url(#furGrad)" stroke-width="12" stroke-linecap="round"/>
-        <!-- Zona suave del rostro -->
-        <ellipse cx="50" cy="43" rx="14" ry="10" fill="url(#faceGrad)"/>
-        <!-- Ojos pequeños oscuros y boca mínima -->
         <circle cx="44" cy="41" r="2.2" fill="#2b2623"/>
         <circle cx="56" cy="41" r="2.2" fill="#2b2623"/>
         <ellipse cx="50" cy="46.5" rx="2.5" ry="1.3" fill="#5c4938"/>
       </svg>
     </div>
-    <div class="muse-corner-badge">
-      <span>m</span>
-    </div>
+    <div class="muse-corner-badge"><span>m</span></div>
   </div>
 
   <div class="title">Muse</div>
-  <div class="subtitle-hint">Toca tu avatar para cambiar imagen • muse.ai</div>
+  <div class="subtitle-hint">accounts.meta.com</div>
 
-  <!-- Controles de Hardware y Tema -->
   <div class="hw-bar">
     <button id="btnFull" class="hw-btn" onclick="toggleFull()">FULL</button>
-    <button id="btnWake" class="hw-btn" onclick="toggleWake()">SIEMPRE ON</button>
-    <button id="btnTheme" class="hw-btn" onclick="toggleTheme()">TEMA CREMA</button>
+    <button id="btnWake" class="hw-btn" onclick="toggleWake()">WAKE</button>
+    <button id="btnTheme" class="hw-btn" onclick="toggleTheme()">TEMA</button>
   </div>
 
-  <!-- Lanzador directo a muse.ai -->
   <button class="launch-main" onclick="openMuseAgent()">
-    <span>ABRIR MI AGENTE MUSE</span>
+    ABRIR MI AGENTE MUSE
   </button>
 
-  <div class="section-label">Seguimiento 1-Toque en tu Reloj</div>
+  <div class="section-label">Comandos 1-Toque</div>
 
   <div class="prompt-grid">
-    <button class="prompt-btn" onclick="copyAndLaunch('Dame un resumen de máximo 3 líneas para leer en mi reloj sobre el estado de las tareas que estás ejecutando ahora mismo.')">
-      <span>Estado de tarea en curso</span>
+    <button class="prompt-btn" onclick="copyAndLaunch('Estado actual de tareas y agentes en segundo plano para mi reloj.')">
+      <span>Estado de tarea actual</span>
       <span class="badge">MUSE</span>
     </button>
 
-    <button class="prompt-btn" onclick="copyAndLaunch('Dime si tienes alguna acción o permiso esperando mi aprobación para seguir avanzando.')">
+    <button class="prompt-btn" onclick="copyAndLaunch('¿Tienes alguna acción o permiso esperando mi aprobación?')">
       <span>Aprobaciones pendientes</span>
       <span class="badge">OK</span>
     </button>
 
-    <button class="prompt-btn" onclick="copyAndLaunch('Ya completé el paso actual. Indícame cuál es la siguiente tarea inmediata en mi lista de Goals / Upcoming.')">
+    <button class="prompt-btn" onclick="copyAndLaunch('Ya completé el paso actual. ¿Cuál es el siguiente paso en Goals?')">
       <span>Siguiente paso en Goals</span>
       <span class="badge">GO</span>
     </button>
-
-    <button class="prompt-btn" onclick="copyAndLaunch('Muéstrame los últimos archivos o resultados guardados en mi Library de Muse.')">
-      <span>Resultados en Library</span>
-      <span class="badge">DOC</span>
-    </button>
   </div>
 
-  <div class="section-label">Progreso Rápido en Muñeca</div>
+  <div class="section-label">Tareas del Reloj</div>
   <div class="task-box" id="taskList"></div>
 
-  <div id="toast" class="toast">Copiado. Abriendo tu Muse...</div>
+  <div id="toast" class="toast">Copiado al portapapeles</div>
 
   <script>
-    const MUSE_AGENT_URL = "https://muse.ai/";
+    // Enlace directo al centro de cuentas de Meta / sesión activa de Muse
+    const MUSE_LOGIN_URL = "https://accounts.meta.com/";
     let wakeLock = null;
 
     const defaultTasks = [
-      { id: 1, text: "Sesión activa en muse.ai", done: true },
-      { id: 2, text: "Supervisar tarea en reloj", done: false },
-      { id: 3, text: "Validar entrega en Library", done: false }
+      { text: "Sesión vinculada con cuenta", done: true },
+      { text: "Verificar estado en reloj", done: false },
+      { text: "Revisar metas del día", done: false }
     ];
 
     function vibrate(ms = 40) {
@@ -380,25 +327,114 @@
       const t = document.getElementById('toast');
       t.textContent = msg;
       t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 1800);
+      setTimeout(() => t.classList.remove('show'), 1600);
     }
 
-    // Guardar y cargar la foto exacta de tu avatar editado
     function handleAvatarUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
-        const base64Img = e.target.result;
-        localStorage.setItem('muse_custom_avatar', base64Img);
+        localStorage.setItem('muse_custom_avatar', e.target.result);
         renderAvatar();
         vibrate(50);
-        showToast('¡Avatar de Muse actualizado!');
+        showToast('Avatar actualizado');
       };
       reader.readAsDataURL(file);
     }
 
     function renderAvatar() {
-      const savedAvatar = localStorage.getItem('muse_custom_avatar');
+      const saved = localStorage.getItem('muse_custom_avatar');
       const container = document.getElementById('avatarContainer');
-      const imgEl = document
+      const imgEl = document.getElementById('customAvatarImg');
+      if (saved) {
+        imgEl.src = saved;
+        container.classList.add('custom-img');
+      } else {
+        container.classList.remove('custom-img');
+      }
+    }
+
+    function toggleTheme() {
+      vibrate(30);
+      document.body.classList.toggle('light-muse');
+      const isLight = document.body.classList.contains('light-muse');
+      localStorage.setItem('muse_theme_light', isLight ? '1' : '0');
+    }
+
+    function loadTheme() {
+      if (localStorage.getItem('muse_theme_light') === '1') {
+        document.body.classList.add('light-muse');
+      }
+    }
+
+    function toggleFull() {
+      vibrate(30);
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    async function toggleWake() {
+      vibrate(30);
+      const btn = document.getElementById('btnWake');
+      if ('wakeLock' in navigator) {
+        if (!wakeLock) {
+          try {
+            wakeLock = await navigator.wakeLock.request('screen');
+            btn.classList.add('active');
+            showToast('Pantalla activa');
+          } catch (e) {}
+        } else {
+          wakeLock.release();
+          wakeLock = null;
+          btn.classList.remove('active');
+        }
+      }
+    }
+
+    function openMuseAgent() {
+      vibrate(50);
+      window.location.href = MUSE_LOGIN_URL;
+    }
+
+    async function copyAndLaunch(promptText) {
+      vibrate([30, 40, 30]);
+      try {
+        await navigator.clipboard.writeText(promptText);
+        showToast('Copiado. Abriendo...');
+      } catch (err) {}
+      setTimeout(() => {
+        window.location.href = MUSE_LOGIN_URL;
+      }, 500);
+    }
+
+    function loadTasks() {
+      const saved = JSON.parse(localStorage.getItem('muse_watch_tasks_v2')) || defaultTasks;
+      const container = document.getElementById('taskList');
+      container.innerHTML = '';
+      saved.forEach((task, idx) => {
+        const row = document.createElement('div');
+        row.className = 'task-item' + (task.done ? ' done' : '');
+        row.onclick = () => toggleTask(idx);
+        row.innerHTML = `<span>${task.text}</span><strong>${task.done ? '✓' : '○'}</strong>`;
+        container.appendChild(row);
+      });
+    }
+
+    function toggleTask(index) {
+      vibrate(25);
+      const saved = JSON.parse(localStorage.getItem('muse_watch_tasks_v2')) || defaultTasks;
+      saved[index].done = !saved[index].done;
+      localStorage.setItem('muse_watch_tasks_v2', JSON.stringify(saved));
+      loadTasks();
+    }
+
+    renderAvatar();
+    loadTheme();
+    loadTasks();
+  </script>
+</body>
+</html>
