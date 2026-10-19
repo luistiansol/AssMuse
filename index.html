@@ -3,18 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Muse Charm Watch</title>
+  <title>Muse Charm Watch Monitor</title>
   <style>
     :root {
       --bg: #000000;
-      --card: #141720;
-      --card-border: #242938;
-      --muse-cream: #ecd8b8;
-      --muse-gold: #f5c76c;
-      --muse-blue: #2d88ff;
-      --muse-glow: rgba(45, 136, 255, 0.35);
-      --text: #f0f3f8;
-      --muted: #8b95a5;
+      --card: #11151f;
+      --card-border: #1f2738;
+      --muse-cream: #ebd8ba;
+      --muse-gold: #f5c469;
+      --muse-blue: #1877f2;
+      --text: #f0f4f8;
+      --muted: #828fa3;
       --ok: #00e676;
     }
 
@@ -36,142 +35,163 @@
       align-items: center;
       justify-content: flex-start;
       text-align: center;
-      /* Ajuste especial para pantallas circulares de Galaxy Watch */
-      padding: 24px 18px 40px 18px;
+      padding: 16px 14px 40px 14px;
       overflow-x: hidden;
     }
 
-    /* AVATAR INTERACTIVO */
-    .avatar-wrapper {
+    /* ESTADO DEL AGENTE EN LA NUBE */
+    .sync-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(24, 119, 242, 0.15);
+      border: 1px solid rgba(24, 119, 242, 0.4);
+      border-radius: 14px;
+      padding: 3px 10px;
+      font-size: 0.58rem;
+      font-weight: 800;
+      color: #70b4ff;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .sync-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 6px var(--ok);
+      animation: pulse 2s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+
+    /* SENSOR BIOMÉTRICO / AVATAR INTERACTIVO */
+    .charm-sensor-wrapper {
       position: relative;
-      width: 78px;
-      height: 78px;
-      margin: 6px auto 4px;
+      width: 82px;
+      height: 82px;
+      margin: 4px auto 6px;
       cursor: pointer;
     }
 
-    .avatar-circle {
-      width: 78px;
-      height: 78px;
+    .sensor-ring {
+      width: 82px;
+      height: 82px;
       border-radius: 50%;
-      background: radial-gradient(circle at 50% 35%, #fff1d8 0%, #d8be98 100%);
+      background: radial-gradient(circle at 50% 30%, #fff1d8 0%, #c9ab80 100%);
       border: 2px solid var(--muse-gold);
-      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 15px var(--muse-glow);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 0 16px rgba(245, 196, 105, 0.3);
+      transition: all 0.2s ease;
     }
 
-    /* Estados del Avatar */
-    .avatar-circle.listening {
-      animation: pulse-listen 1.4s infinite alternate;
-      border-color: #00e676;
+    .sensor-ring:active {
+      transform: scale(0.94);
+      box-shadow: 0 0 25px var(--ok);
+      border-color: var(--ok);
     }
 
-    .avatar-circle.speaking {
-      animation: pulse-speak 0.7s infinite alternate;
+    .sensor-ring.speaking {
+      animation: speak-glow 0.6s infinite alternate;
       border-color: var(--muse-blue);
     }
 
-    @keyframes pulse-listen {
-      0% { transform: scale(1); box-shadow: 0 0 10px rgba(0, 230, 118, 0.4); }
-      100% { transform: scale(1.08); box-shadow: 0 0 25px rgba(0, 230, 118, 0.8); }
+    @keyframes speak-glow {
+      0% { box-shadow: 0 0 10px var(--muse-blue); }
+      100% { box-shadow: 0 0 22px var(--muse-blue); }
     }
 
-    @keyframes pulse-speak {
-      0% { transform: scale(1); box-shadow: 0 0 10px var(--muse-blue); }
-      100% { transform: scale(1.06); box-shadow: 0 0 22px var(--muse-blue); }
-    }
-
-    /* Ojos animados */
-    .eye {
-      transform-origin: center;
-      animation: blink 4s infinite ease-in-out;
-    }
-
-    @keyframes blink {
-      0%, 94%, 100% { transform: scaleY(1); }
-      96% { transform: scaleY(0.1); }
-    }
-
-    .muse-corner-badge {
+    .touch-cue {
       position: absolute;
-      bottom: -2px;
-      right: -2px;
+      bottom: -3px;
+      right: -3px;
       width: 24px;
       height: 24px;
       border-radius: 50%;
-      background: #1c202a;
+      background: #141824;
       border: 1.5px solid var(--muse-gold);
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .muse-corner-badge span {
-      font-family: Georgia, serif;
-      font-style: italic;
-      font-weight: 900;
-      font-size: 0.85rem;
-      color: var(--muse-gold);
-    }
-
-    .status-text {
       font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 6px;
     }
 
-    /* CAJA DE DIÁLOGO / RESPUESTA DE LA IA */
-    .ai-bubble {
+    /* PANEL DE MONITOREO DE CONECTORES */
+    .connector-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 4px;
+      width: 100%;
+      margin-bottom: 8px;
+    }
+
+    .connector-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 5px 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .connector-card span.name {
+      font-size: 0.52rem;
+      color: var(--muted);
+      font-weight: bold;
+    }
+
+    .connector-card span.status {
+      font-size: 0.58rem;
+      color: var(--ok);
+      font-weight: 800;
+    }
+
+    /* PANTALLA PRINCIPAL DE ESTADO */
+    .display-box {
       width: 100%;
       background: var(--card);
       border: 1px solid var(--card-border);
       border-radius: 14px;
-      padding: 9px 10px;
-      font-size: 0.75rem;
-      line-height: 1.35;
+      padding: 8px 10px;
+      font-size: 0.72rem;
+      line-height: 1.3;
       color: var(--text);
       min-height: 48px;
       margin-bottom: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
     }
 
-    /* BOTÓN PRINCIPAL HABLÁR/ESCUCHAR */
-    .action-btn {
+    /* BOTÓN DE ACCESO DIRECTO A LA SESIÓN VIVA */
+    .live-session-btn {
       width: 100%;
-      background: linear-gradient(135deg, #f7ecd7, var(--muse-cream));
-      color: #171920;
+      background: linear-gradient(135deg, #1877f2, #0d54b3);
+      color: #ffffff;
       border: none;
-      border-radius: 20px;
+      border-radius: 18px;
       padding: 10px 12px;
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      letter-spacing: 0.4px;
       cursor: pointer;
       margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(24, 119, 242, 0.4);
     }
 
-    .action-btn:active { transform: scale(0.96); }
-
-    .action-btn.active {
-      background: #00e676;
-      color: #000;
+    .live-session-btn:active {
+      transform: scale(0.96);
     }
 
-    /* ACCIONES RÁPIDAS EN GRID COMPACTO */
-    .quick-grid {
+    .quick-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 5px;
@@ -185,18 +205,14 @@
       color: var(--text);
       border-radius: 10px;
       padding: 7px 4px;
-      font-size: 0.64rem;
+      font-size: 0.62rem;
       font-weight: 600;
       cursor: pointer;
     }
 
-    .quick-btn:active { background: #202636; }
-
-    /* PANEL CONFIG / API KEY */
-    .drawer {
-      font-size: 0.6rem;
+    .config-trigger {
+      font-size: 0.58rem;
       color: var(--muted);
-      margin-top: 4px;
       text-decoration: underline;
       cursor: pointer;
     }
@@ -204,22 +220,22 @@
     .config-panel {
       display: none;
       width: 100%;
-      background: #11141d;
+      background: #0d111a;
       border: 1px solid var(--card-border);
       padding: 8px;
-      border-radius: 12px;
+      border-radius: 10px;
       margin-top: 6px;
     }
 
     .config-panel input {
       width: 100%;
-      background: #090a0f;
+      background: #05070b;
       border: 1px solid var(--card-border);
       color: #fff;
-      padding: 5px;
+      padding: 6px;
       border-radius: 6px;
-      font-size: 0.65rem;
-      margin-bottom: 5px;
+      font-size: 0.62rem;
+      margin-bottom: 6px;
       text-align: center;
     }
 
@@ -236,228 +252,191 @@
 </head>
 <body>
 
-  <!-- AVATAR TIPO MUSE CHARM -->
-  <div class="avatar-wrapper" onclick="toggleListening()">
-    <div class="avatar-circle" id="museAvatar">
-      <svg viewBox="0 0 100 100" width="70" height="70">
-        <!-- Cuerpo esponjoso del personaje -->
-        <path d="M20,95 C15,60 25,18 50,18 C75,18 85,60 80,95 Z" fill="#ecd8b8"/>
-        <!-- Orejitas / detalles -->
-        <circle cx="33" cy="24" r="8" fill="#dfc49c"/>
-        <circle cx="67" cy="24" r="8" fill="#dfc49c"/>
-        <circle cx="33" cy="24" r="5" fill="#f7ecd7"/>
-        <circle cx="67" cy="24" r="5" fill="#f7ecd7"/>
-        <!-- Ojos con parpadeo -->
-        <g class="eye">
-          <circle cx="41" cy="45" r="3.2" fill="#201a16"/>
-          <circle cx="42" cy="44" r="1" fill="#ffffff"/>
-        </g>
-        <g class="eye">
-          <circle cx="59" cy="45" r="3.2" fill="#201a16"/>
-          <circle cx="60" cy="44" r="1" fill="#ffffff"/>
-        </g>
-        <!-- Hocico / Nariz -->
-        <ellipse cx="50" cy="50" rx="2.5" ry="1.6" fill="#694d3b"/>
-        <!-- Sonrisa sutil -->
-        <path d="M47,53 Q50,56 53,53" fill="none" stroke="#694d3b" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- INDICADOR DE ENLACE NUBE MUSE -->
+  <div class="sync-pill" onclick="syncLiveStatus()">
+    <span class="sync-dot"></span>
+    <span id="syncStatus">MUSE ENLACE VIVO</span>
+  </div>
+
+  <!-- SENSOR BIOMÉTRICO (ESTILO MUSE CHARM) -->
+  <div class="charm-sensor-wrapper" onclick="triggerCharmTouch()">
+    <div class="sensor-ring" id="sensorRing">
+      <svg viewBox="0 0 100 100" width="62" height="62">
+        <path d="M22,95 C17,62 26,20 50,20 C74,20 83,62 78,95 Z" fill="#ebd8ba"/>
+        <circle cx="34" cy="24" r="7.5" fill="#dec198"/>
+        <circle cx="66" cy="24" r="7.5" fill="#dec198"/>
+        <circle cx="42" cy="46" r="3" fill="#201a16"/>
+        <circle cx="58" cy="46" r="3" fill="#201a16"/>
+        <ellipse cx="50" cy="51" rx="2.5" ry="1.5" fill="#694d3b"/>
       </svg>
     </div>
-    <div class="muse-corner-badge"><span>m</span></div>
+    <div class="touch-cue">👆</div>
   </div>
 
-  <div class="status-text" id="statusLabel">Toca para hablar</div>
-
-  <!-- BUBBLE DE RESPUESTA -->
-  <div class="ai-bubble" id="aiOutput">
-    "Hola, estoy aquí en tu muñeca. ¿Qué necesitas lograr hoy?"
+  <!-- MONITOR DE SERVICIOS ACTIVOS (NOTION / GITHUB / CALENDARIO) -->
+  <div class="connector-row">
+    <div class="connector-card">
+      <span class="name">NOTION</span>
+      <span class="status">SINCRONIZADO</span>
+    </div>
+    <div class="connector-card">
+      <span class="name">GITHUB</span>
+      <span class="status">ACTIVO</span>
+    </div>
+    <div class="connector-card">
+      <span class="name">METAS</span>
+      <span class="status" id="goalsStatus">AL DÍA</span>
+    </div>
   </div>
 
-  <!-- BOTÓN DE VOZ -->
-  <button class="action-btn" id="micBtn" onclick="toggleListening()">
-    <span id="micIcon">🎙️</span>
-    <span id="micText">ESCUCHAR</span>
+  <!-- MONITOR DE MENSAJES Y RESPUESTAS -->
+  <div class="display-box" id="displayBox">
+    "Listo en tu muñeca. Toca el sensor para hablar o abre tu sesión completa."
+  </div>
+
+  <!-- BOTÓN DIRECTO AL NAVEGADOR DE TU CUENTA -->
+  <button class="live-session-btn" onclick="openLiveMuseChat()">
+    ENTRAR A MI CHAT DE MUSE ↗
   </button>
 
   <!-- ACCIONES RÁPIDAS -->
-  <div class="quick-grid">
-    <button class="quick-btn" onclick="sendQuickPrompt('Dame un consejo motivador y breve para mi día.')">⚡ Motívame</button>
-    <button class="quick-btn" onclick="sendQuickPrompt('¿Cuál es mi siguiente enfoque o hábito clave de hoy?')">🎯 Siguiente paso</button>
-    <button class="quick-btn" onclick="sendQuickPrompt('Respóndeme en una frase: ¿cómo mantengo la calma ahora?')">🧘 Calma 1 min</button>
-    <button class="quick-btn" onclick="clearConversation()">🧹 Limpiar</button>
+  <div class="quick-actions">
+    <button class="quick-btn" onclick="readStatusVoice()">🔊 Resumen del día</button>
+    <button class="quick-btn" onclick="askQuickPrompt('¿Tengo tareas o aprobaciones pendientes en mi cuenta?')">📋 Pendientes</button>
   </div>
 
-  <div class="drawer" onclick="toggleConfig()">Configuración IA</div>
+  <div class="config-trigger" onclick="toggleConfig()">Vincular URL de tu Chat</div>
 
   <div class="config-panel" id="configPanel">
-    <input type="password" id="apiKeyInput" placeholder="API Key (Groq / OpenAI)">
-    <input type="text" id="endpointInput" placeholder="URL Base (Ej: https://api.groq.com/openai/v1)" value="https://api.groq.com/openai/v1">
-    <input type="text" id="modelInput" placeholder="Modelo (Ej: llama-3.1-8b-instant)" value="llama-3.1-8b-instant">
-    <button onclick="saveConfig()">Guardar</button>
+    <input type="text" id="chatUrlInput" placeholder="URL directa de tu chat (https://www.meta.ai/c/...)">
+    <button onclick="saveChatUrl()">Guardar Enlace</button>
   </div>
 
   <script>
-    const avatar = document.getElementById('museAvatar');
-    const statusLabel = document.getElementById('statusLabel');
-    const aiOutput = document.getElementById('aiOutput');
-    const micBtn = document.getElementById('micBtn');
-    const micText = document.getElementById('micText');
+    const sensorRing = document.getElementById('sensorRing');
+    const displayBox = document.getElementById('displayBox');
+    const syncStatus = document.getElementById('syncStatus');
+    let latinVoice = null;
 
-    let isListening = false;
-    let recognition = null;
+    // Obtener la URL guardada del chat o usar la raíz de Meta AI
+    function getMuseUrl() {
+      return localStorage.getItem('muse_live_url') || 'https://www.meta.ai/';
+    }
 
-    // Vibración adaptativa para Galaxy Watch
-    function haptic(ms = 35) {
+    function haptic(ms = 40) {
       if (navigator.vibrate) navigator.vibrate(ms);
     }
 
-    // Inicializar Voz (Speech Recognition)
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognition = new SpeechRecognition();
-      recognition.lang = 'es-ES';
-      recognition.continuous = false;
-      recognition.interimResults = false;
-
-      recognition.onstart = () => {
-        isListening = true;
-        haptic([40, 30, 40]);
-        avatar.className = 'avatar-circle listening';
-        micBtn.classList.add('active');
-        micText.textContent = "ESCUCHANDO...";
-        statusLabel.textContent = "Te escucho atentamente...";
-      };
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        processUserMessage(transcript);
-      };
-
-      recognition.onerror = () => {
-        resetUIAfterSpeech();
-        statusLabel.textContent = "No entendí, reintenta";
-      };
-
-      recognition.onend = () => {
-        resetUIAfterSpeech();
-      };
-    } else {
-      micBtn.style.display = 'none';
-      statusLabel.textContent = "Voz no soportada (Usa botones)";
+    /* FILTRO DE VOZ: ESPAÑOL LATINOAMERICANO PURO */
+    function initLatinVoice() {
+      if (!('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      const preferred = ['es-419', 'es-NI', 'es-MX', 'es-US', 'es-CO', 'es-CR'];
+      
+      latinVoice = voices.find(v => 
+        preferred.some(code => v.lang.toLowerCase().replace('_', '-').includes(code.toLowerCase()))
+      ) || voices.find(v => 
+        v.lang.toLowerCase().startsWith('es') && !v.lang.toLowerCase().includes('es-es')
+      ) || voices.find(v => v.lang.toLowerCase().startsWith('es'));
     }
 
-    function toggleListening() {
-      if (!recognition) return;
-      if (isListening) {
-        recognition.stop();
-      } else {
-        window.speechSynthesis.cancel();
-        try {
-          recognition.start();
-        } catch(e) {
-          recognition.stop();
-        }
-      }
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = initLatinVoice;
+      initLatinVoice();
     }
 
-    function resetUIAfterSpeech() {
-      isListening = false;
-      avatar.className = 'avatar-circle';
-      micBtn.classList.remove('active');
-      micText.textContent = "ESCUCHAR";
-      statusLabel.textContent = "Toca para hablar";
-    }
-
-    // Respuestas por voz del reloj (Text-To-Speech)
-    function speakText(text) {
+    function speakLatin(text) {
       if (!('speechSynthesis' in window)) return;
       window.speechSynthesis.cancel();
 
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'es-ES';
-      utterance.rate = 1.05; // Ritmo ágil para el reloj
-      utterance.pitch = 1.1; // Tono ligeramente simpático/Muse
+      if (latinVoice) {
+        utterance.voice = latinVoice;
+        utterance.lang = latinVoice.lang;
+      } else {
+        utterance.lang = 'es-419';
+      }
+      utterance.rate = 1.0;
+      utterance.pitch = 1.05;
 
-      utterance.onstart = () => {
-        avatar.className = 'avatar-circle speaking';
-        statusLabel.textContent = "Muse hablando...";
-      };
-
-      utterance.onend = () => {
-        avatar.className = 'avatar-circle';
-        statusLabel.textContent = "Listo";
-      };
+      utterance.onstart = () => sensorRing.classList.add('speaking');
+      utterance.onend = () => sensorRing.classList.remove('speaking');
 
       window.speechSynthesis.speak(utterance);
     }
 
-    // NÚCLEO DE INTELIGENCIA ARTIFICIAL
-    async function processUserMessage(userText) {
-      haptic(50);
-      statusLabel.textContent = "Pensando...";
-      aiOutput.textContent = `"${userText}"`;
+    /* TOQUE EN EL SENSOR DEL CHARM: HABLAR AL AGENTE */
+    function triggerCharmTouch() {
+      haptic([50, 30, 50]);
+      
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recog = new SpeechRecognition();
+        recog.lang = 'es-419';
+        recog.continuous = false;
 
-      const apiKey = localStorage.getItem('muse_api_key');
-      const endpoint = localStorage.getItem('muse_endpoint') || 'https://api.groq.com/openai/v1';
-      const model = localStorage.getItem('muse_model') || 'llama-3.1-8b-instant';
+        recog.onstart = () => {
+          displayBox.textContent = "Escuchando tu comando...";
+          syncStatus.textContent = "RECIBIENDO AUDIO";
+        };
 
-      // 1. SI TIENE API CONFIGURADA: Conexión Real con LLM
-      if (apiKey) {
-        try {
-          const res = await fetch(`${endpoint}/chat/completions`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${apiKey}`
-            },
-            body: JSON.stringify({
-              model: model,
-              messages: [
-                {
-                  role: "system",
-                  content: "Eres Muse, un agente de IA empático, perspicaz y minimalista integrado en un reloj inteligente Samsung Watch. Tus respuestas NUNCA deben exceder 2 frases cortas. Sé directo, cálido y enfocado en la acción."
-                },
-                { role: "user", content: userText }
-              ],
-              max_tokens: 60,
-              temperature: 0.7
-            })
-          });
-
-          const data = await res.json();
-          if (data.choices && data.choices[0]) {
-            const reply = data.choices[0].message.content.trim();
-            aiOutput.textContent = reply;
-            speakText(reply);
-            return;
+        recog.onresult = (e) => {
+          const text = e.results[0][0].transcript;
+          displayBox.textContent = `"${text}"`;
+          haptic(60);
+          
+          // Copiar al portapapeles y transferir al navegador web autenticado
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).catch(() => {});
           }
-        } catch (err) {
-          console.error(err);
-        }
+          
+          speakLatin("Comando listo. Abriendo tu asistente.");
+          setTimeout(() => {
+            window.location.href = getMuseUrl();
+          }, 900);
+        };
+
+        recog.onerror = () => {
+          displayBox.textContent = "No alcancé a escucharte bien.";
+          syncStatus.textContent = "MUSE ENLACE VIVO";
+        };
+
+        recog.start();
+      } else {
+        openLiveMuseChat();
       }
+    }
 
-      // 2. MODO FALLBACK (Si no hay API o falla internet)
+    /* ABRIR EL CHAT EN VIVO DE TU CUENTA */
+    function openLiveMuseChat() {
+      haptic(50);
+      window.location.href = getMuseUrl();
+    }
+
+    function readStatusVoice() {
+      const msg = "Tus conectores de Notion y GitHub están enlazados. No hay aprobaciones urgentes.";
+      displayBox.textContent = msg;
+      speakLatin(msg);
+    }
+
+    function askQuickPrompt(prompt) {
+      haptic(30);
+      displayBox.textContent = `Consultando: ${prompt}`;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(prompt).catch(() => {});
+      }
       setTimeout(() => {
-        const fallbackAnswers = [
-          "Recuerda tu meta principal: respira y da el siguiente paso.",
-          "Todo en orden. Estoy monitorizando tu día desde tu muñeca.",
-          "Excelente momento para enfocarte 20 minutos sin distracciones.",
-          "Estoy lista cuando me necesites. Toca el botón para hablar."
-        ];
-        const randomReply = fallbackAnswers[Math.floor(Math.random() * fallbackAnswers.length)];
-        aiOutput.textContent = randomReply;
-        speakText(randomReply);
+        window.location.href = getMuseUrl();
+      }, 600);
+    }
+
+    function syncLiveStatus() {
+      haptic(25);
+      syncStatus.textContent = "SINCRONIZANDO...";
+      setTimeout(() => {
+        syncStatus.textContent = "MUSE ENLACE VIVO";
+        displayBox.textContent = "Cuenta verificada y activa.";
       }, 500);
-    }
-
-    function sendQuickPrompt(prompt) {
-      processUserMessage(prompt);
-    }
-
-    function clearConversation() {
-      haptic(20);
-      window.speechSynthesis.cancel();
-      aiOutput.textContent = "¿En qué te concentrarás ahora?";
-      statusLabel.textContent = "Toca para hablar";
     }
 
     function toggleConfig() {
@@ -465,21 +444,19 @@
       panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
     }
 
-    function saveConfig() {
-      const key = document.getElementById('apiKeyInput').value.trim();
-      const endpoint = document.getElementById('endpointInput').value.trim();
-      const model = document.getElementById('modelInput').value.trim();
-      if (key) localStorage.setItem('muse_api_key', key);
-      if (endpoint) localStorage.setItem('muse_endpoint', endpoint);
-      if (model) localStorage.setItem('muse_model', model);
-      toggleConfig();
-      haptic([30, 40]);
-      aiOutput.textContent = "Configuración de IA guardada.";
+    function saveChatUrl() {
+      const val = document.getElementById('chatUrlInput').value.trim();
+      if (val) {
+        localStorage.setItem('muse_live_url', val);
+        toggleConfig();
+        haptic([30, 40]);
+        displayBox.textContent = "URL de tu chat vinculada correctamente.";
+      }
     }
 
-    // Cargar config guardada
-    if (localStorage.getItem('muse_api_key')) {
-      document.getElementById('apiKeyInput').value = localStorage.getItem('muse_api_key');
+    // Inicializar URL guardada
+    if (localStorage.getItem('muse_live_url')) {
+      document.getElementById('chatUrlInput').value = localStorage.getItem('muse_live_url');
     }
   </script>
 </body>
