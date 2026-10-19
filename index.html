@@ -2,16 +2,17 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <!-- Viewport estricto para evitar zoom accidental en el reloj -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Muse Charm Watch</title>
   <style>
     :root {
       --bg: #000000;
-      --card: #121622;
-      --card-border: #21293d;
-      --muse-cream: #ebd8ba;
-      --muse-gold: #f5c469;
-      --muse-blue: #1877f2;
+      --gold: #f5c469;
+      --gold-glow: rgba(245, 196, 105, 0.35);
+      --cream: #ebd8ba;
+      --blue: #1877f2;
+      --card: #12151e;
       --text: #f0f4f8;
       --muted: #828fa3;
       --ok: #00e676;
@@ -25,269 +26,337 @@
       user-select: none;
     }
 
-    body {
+    /* FORMATO REDONDO EXACTO PARA GALAXY / TIZEN WATCH */
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
       background-color: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      min-height: 100vh;
+    }
+
+    body {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      text-align: center;
-      padding: 18px 14px 45px 14px;
-      overflow-x: hidden;
+      justify-content: space-between;
+      /* Margen seguro para que la pantalla redonda no corte los bordes */
+      padding: 8vh 6vw 7vh 6vw;
+      border-radius: 50%;
     }
 
-    .sync-pill {
-      display: inline-flex;
+    /* ENCABEZADO MINIMALISTA CIRCULAR */
+    .top-status {
+      display: flex;
       align-items: center;
-      gap: 6px;
-      background: rgba(24, 119, 242, 0.15);
-      border: 1px solid rgba(24, 119, 242, 0.4);
-      border-radius: 14px;
-      padding: 3px 10px;
-      font-size: 0.58rem;
+      gap: 5px;
+      font-size: 0.62rem;
       font-weight: 800;
-      color: #70b4ff;
-      margin-bottom: 6px;
+      letter-spacing: 0.8px;
+      color: var(--gold);
       text-transform: uppercase;
+      margin-top: 2px;
     }
 
-    .sync-dot {
+    .live-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
       background: var(--ok);
       box-shadow: 0 0 6px var(--ok);
+      animation: pulse-dot 2s infinite alternate;
     }
 
-    /* AVATAR TOUCH */
-    .charm-sensor-wrapper {
+    @keyframes pulse-dot {
+      0% { opacity: 0.3; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* MASCOTA CHARM CENTRAL CON FÍSICAS */
+    .charm-stage {
       position: relative;
-      width: 82px;
-      height: 82px;
-      margin: 4px auto 8px;
-      cursor: pointer;
-    }
-
-    .sensor-ring {
-      width: 82px;
-      height: 82px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 50% 30%, #fff1d8 0%, #c9ab80 100%);
-      border: 2px solid var(--muse-gold);
+      width: 36vw;
+      max-width: 140px;
+      aspect-ratio: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 16px rgba(245, 196, 105, 0.3);
-      transition: transform 0.15s ease;
+      cursor: pointer;
     }
 
-    .sensor-ring:active {
-      transform: scale(0.93);
+    .charm-body {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 30%, #fff4df 0%, #d1b48b 100%);
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 18px var(--gold-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* Reacción al tocar (efecto squish) */
+    .charm-body:active, .charm-body.tapped {
+      transform: scale(0.90) scaleY(0.85);
+      box-shadow: 0 0 25px var(--ok);
       border-color: var(--ok);
     }
 
-    .touch-cue {
-      position: absolute;
-      bottom: -2px;
-      right: -2px;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: #141824;
-      border: 1.5px solid var(--muse-gold);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.65rem;
+    .charm-body.speaking {
+      animation: speak-pulse 0.7s infinite alternate ease-in-out;
+      border-color: var(--blue);
     }
 
-    .display-box {
-      width: 100%;
+    @keyframes speak-pulse {
+      0% { transform: scale(0.98); box-shadow: 0 0 12px var(--blue); }
+      100% { transform: scale(1.06); box-shadow: 0 0 24px var(--blue); }
+    }
+
+    /* Ojos parpadeantes */
+    .eye {
+      transform-origin: center;
+      animation: blink 4s infinite ease-in-out;
+    }
+
+    @keyframes blink {
+      0%, 94%, 100% { transform: scaleY(1); }
+      96% { transform: scaleY(0.1); }
+    }
+
+    /* Orejitas con balanceo */
+    .ear {
+      animation: ear-wiggle 6s infinite ease-in-out;
+      transform-origin: bottom center;
+    }
+
+    @keyframes ear-wiggle {
+      0%, 90%, 100% { transform: rotate(0deg); }
+      93% { transform: rotate(-6deg); }
+      96% { transform: rotate(6deg); }
+    }
+
+    /* BURBUJA DE DIÁLOGO DINÁMICA ULTRA-COMPACTA */
+    .dialog-pill {
+      width: 84%;
       background: var(--card);
-      border: 1px solid var(--card-border);
+      border: 1px solid #1f2638;
       border-radius: 14px;
-      padding: 9px 10px;
-      font-size: 0.74rem;
-      line-height: 1.35;
+      padding: 6px 10px;
+      font-size: 0.68rem;
+      line-height: 1.25;
       color: var(--text);
-      min-height: 48px;
-      margin-bottom: 10px;
+      text-align: center;
+      min-height: 38px;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
     }
 
-    /* BOTÓN DIRECTO A LA PÁGINA WEB */
-    .web-btn {
-      width: 100%;
-      background: linear-gradient(135deg, #1877f2, #0d54b3);
-      color: #ffffff;
-      border: none;
-      border-radius: 18px;
-      padding: 12px 10px;
-      font-size: 0.8rem;
-      font-weight: 900;
-      cursor: pointer;
-      margin-bottom: 8px;
-      box-shadow: 0 4px 12px rgba(24, 119, 242, 0.4);
-      display: block;
-      text-decoration: none;
-    }
-
-    .web-btn:active {
-      transform: scale(0.96);
-    }
-
-    .quick-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    /* CONTROLES CURVADOS INFERIORES */
+    .bottom-dock {
+      display: flex;
+      width: 82%;
       gap: 6px;
-      width: 100%;
-      margin-bottom: 8px;
+      justify-content: center;
+      margin-bottom: 2px;
     }
 
-    .quick-btn {
+    .dock-btn {
+      flex: 1;
       background: var(--card);
-      border: 1px solid var(--card-border);
+      border: 1px solid #232c40;
       color: var(--text);
-      border-radius: 10px;
-      padding: 8px 4px;
-      font-size: 0.64rem;
-      font-weight: 600;
+      border-radius: 16px;
+      padding: 9px 4px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
       cursor: pointer;
     }
 
-    .config-trigger {
-      font-size: 0.58rem;
-      color: var(--muted);
-      text-decoration: underline;
-      cursor: pointer;
-      margin-top: 4px;
+    .dock-btn:active {
+      background: #1c2438;
+      transform: scale(0.94);
     }
 
-    .config-panel {
-      display: none;
-      width: 100%;
-      background: #0d111a;
-      border: 1px solid var(--card-border);
-      padding: 8px;
-      border-radius: 10px;
-      margin-top: 6px;
-    }
-
-    .config-panel input {
-      width: 100%;
-      background: #05070b;
-      border: 1px solid var(--card-border);
-      color: #fff;
-      padding: 6px;
-      border-radius: 6px;
-      font-size: 0.62rem;
-      margin-bottom: 6px;
-      text-align: center;
-    }
-
-    .config-panel button {
-      background: var(--muse-blue);
+    .dock-btn.primary {
+      background: linear-gradient(135deg, var(--blue), #0b55b8);
       border: none;
-      color: #fff;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.62rem;
-      font-weight: bold;
+      color: #ffffff;
+      flex: 1.3;
+      box-shadow: 0 3px 10px rgba(24, 119, 242, 0.4);
     }
   </style>
 </head>
 <body>
 
-  <div class="sync-pill" onclick="openMuseWeb()">
-    <span class="sync-dot"></span>
-    <span>MUSE WEB ACTIVO</span>
+  <!-- ESTADO DEL CHARM EN LA PARTE SUPERIOR -->
+  <div class="top-status">
+    <span class="live-dot"></span>
+    <span id="statusLabel">MUSE CHARM</span>
   </div>
 
-  <!-- AVATAR / ACCESO DIRECTO -->
-  <div class="charm-sensor-wrapper" onclick="openMuseWeb()">
-    <div class="sensor-ring" id="sensorRing">
-      <svg viewBox="0 0 100 100" width="62" height="62">
-        <path d="M22,95 C17,62 26,20 50,20 C74,20 83,62 78,95 Z" fill="#ebd8ba"/>
-        <circle cx="34" cy="24" r="7.5" fill="#dec198"/>
-        <circle cx="66" cy="24" r="7.5" fill="#dec198"/>
-        <circle cx="42" cy="46" r="3" fill="#201a16"/>
-        <circle cx="58" cy="46" r="3" fill="#201a16"/>
-        <ellipse cx="50" cy="51" rx="2.5" ry="1.5" fill="#694d3b"/>
+  <!-- MASCOTA CHARM INTERACTIVA -->
+  <div class="charm-stage" onclick="pokeCharm()">
+    <div class="charm-body" id="charmBody">
+      <svg viewBox="0 0 100 100" width="80%" height="80%">
+        <!-- Orejas con animación -->
+        <g class="ear">
+          <circle cx="32" cy="22" r="8" fill="#d4b488"/>
+          <circle cx="32" cy="22" r="5" fill="#fcecd2"/>
+        </g>
+        <g class="ear">
+          <circle cx="68" cy="22" r="8" fill="#d4b488"/>
+          <circle cx="68" cy="22" r="5" fill="#fcecd2"/>
+        </g>
+        <!-- Cuerpo esponjoso -->
+        <path d="M20,95 C15,60 25,18 50,18 C75,18 85,60 80,95 Z" fill="#ebd8ba"/>
+        <!-- Ojos con parpadeo -->
+        <g class="eye">
+          <circle cx="41" cy="45" r="3.2" fill="#1e1814"/>
+          <circle cx="42" cy="44" r="1.1" fill="#ffffff"/>
+        </g>
+        <g class="eye">
+          <circle cx="59" cy="45" r="3.2" fill="#1e1814"/>
+          <circle cx="60" cy="44" r="1.1" fill="#ffffff"/>
+        </g>
+        <!-- Nariz / Hocico -->
+        <ellipse cx="50" cy="51" rx="2.5" ry="1.6" fill="#694d3b"/>
+        <!-- Sonrisa sutil -->
+        <path d="M47,54 Q50,57 53,54" fill="none" stroke="#694d3b" stroke-width="1.2" stroke-linecap="round"/>
       </svg>
     </div>
-    <div class="touch-cue">↗</div>
   </div>
 
-  <div class="display-box" id="displayBox">
-    Toca el botón para abrir la web de tu chat Muse directamente.
+  <!-- BURBUJA DE MENSAJE -->
+  <div class="dialog-pill" id="dialogText">
+    Tocame para hablar o entra al chat web.
   </div>
 
-  <!-- BOTÓN DIRECTO QUE SOLO ABRE LA PÁGINA WEB -->
-  <button class="web-btn" onclick="openMuseWeb()">
-    ABRIR WEB DE MUSE ↗
-  </button>
-
-  <div class="quick-actions">
-    <button class="quick-btn" onclick="copyAndOpen('¿Cuáles son mis metas y tareas de hoy en Muse?')">🎯 Ver Metas</button>
-    <button class="quick-btn" onclick="copyAndOpen('Estado general de mis agentes y notificaciones')">📋 Resumen</button>
-  </div>
-
-  <div class="config-trigger" onclick="toggleConfig()">Editar URL de Destino</div>
-
-  <div class="config-panel" id="configPanel">
-    <input type="text" id="targetUrlInput" placeholder="https://muse.ai" value="https://muse.ai">
-    <button onclick="saveTargetUrl()">Guardar</button>
+  <!-- BOTONES CURVADOS PARA EL PULGAR -->
+  <div class="bottom-dock">
+    <button class="dock-btn" onclick="listenCharmVoice()">
+      <span>🎙️</span> Hablar
+    </button>
+    <button class="dock-btn primary" onclick="goToMuseWeb()">
+      <span>🌐</span> Abrir Web
+    </button>
   </div>
 
   <script>
-    // URL Web oficial directa
-    const DEFAULT_URL = "https://muse.ai";
+    const charmBody = document.getElementById('charmBody');
+    const dialogText = document.getElementById('dialogText');
+    const statusLabel = document.getElementById('statusLabel');
+    let latinVoice = null;
 
+    // Vibración corta para simular contacto físico
     function haptic(ms = 35) {
       if (navigator.vibrate) navigator.vibrate(ms);
     }
 
-    function getTargetUrl() {
-      return localStorage.getItem('muse_watch_target_url') || DEFAULT_URL;
+    /* FILTRO DE VOZ: ESPAÑOL LATINOAMERICANO */
+    function setupLatinAudio() {
+      if (!('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      const preferred = ['es-419', 'es-NI', 'es-MX', 'es-US', 'es-CO'];
+      latinVoice = voices.find(v => 
+        preferred.some(code => v.lang.toLowerCase().replace('_', '-').includes(code.toLowerCase()))
+      ) || voices.find(v => 
+        v.lang.toLowerCase().startsWith('es') && !v.lang.toLowerCase().includes('es-es')
+      ) || voices.find(v => v.lang.toLowerCase().startsWith('es'));
     }
 
-    // Navegación web pura, sin intents ni Google Play
-    function openMuseWeb() {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = setupLatinAudio;
+      setupLatinAudio();
+    }
+
+    function speakCharm(text) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+
+      const utter = new SpeechSynthesisUtterance(text);
+      if (latinVoice) utter.voice = latinVoice;
+      utter.lang = 'es-419';
+      utter.rate = 1.05;
+      utter.pitch = 1.15; // Tono ligeramente más amigable / compañero
+
+      utter.onstart = () => charmBody.classList.add('speaking');
+      utter.onend = () => charmBody.classList.remove('speaking');
+
+      window.speechSynthesis.speak(utter);
+    }
+
+    /* INTERACCIÓN TÁCTIL CON EL CHARM */
+    function pokeCharm() {
+      haptic([30, 20, 40]);
+      charmBody.classList.add('tapped');
+      setTimeout(() => charmBody.classList.remove('tapped'), 200);
+
+      const greetings = [
+        "¡Hola! Aquí estoy en tu reloj.",
+        "¿Qué tenemos pendiente para hoy?",
+        "Tus metas de Notion están al día.",
+        "Listo para cuando me ocupes."
+      ];
+      const pick = greetings[Math.floor(Math.random() * greetings.length)];
+      dialogText.textContent = pick;
+      speakCharm(pick);
+    }
+
+    /* HABLAR CON EL CHARM DIRECTO EN EL RELOJ */
+    function listenCharmVoice() {
       haptic(50);
-      window.location.href = getTargetUrl();
-    }
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const rec = new SpeechRec();
+        rec.lang = 'es-419';
 
-    function copyAndOpen(promptText) {
-      haptic(30);
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(promptText).catch(() => {});
+        rec.onstart = () => {
+          statusLabel.textContent = "ESCUCHANDO...";
+          dialogText.textContent = "Te escucho atentamente...";
+          charmBody.classList.add('speaking');
+        };
+
+        rec.onresult = (e) => {
+          charmBody.classList.remove('speaking');
+          statusLabel.textContent = "MUSE CHARM";
+          const query = e.results[0][0].transcript;
+          dialogText.textContent = `"${query}"`;
+          haptic([40, 40]);
+
+          // Copia al portapapeles y ofrece entrar a la web
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(query).catch(()=>{});
+          }
+          speakCharm("Entendido. Abriendo tu chat.");
+          setTimeout(() => { goToMuseWeb(); }, 800);
+        };
+
+        rec.onerror = () => {
+          charmBody.classList.remove('speaking');
+          statusLabel.textContent = "MUSE CHARM";
+          dialogText.textContent = "No alcancé a oírte bien.";
+        };
+
+        rec.start();
+      } else {
+        goToMuseWeb();
       }
-      openMuseWeb();
     }
 
-    function toggleConfig() {
-      const panel = document.getElementById('configPanel');
-      panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function saveTargetUrl() {
-      const val = document.getElementById('targetUrlInput').value.trim();
-      if (val) {
-        localStorage.setItem('muse_watch_target_url', val);
-        toggleConfig();
-        haptic([30, 40]);
-        document.getElementById('displayBox').textContent = "URL actualizada. Listo para entrar.";
-      }
-    }
-
-    // Cargar si ya había una personalizada
-    if (localStorage.getItem('muse_watch_target_url')) {
-      document.getElementById('targetUrlInput').value = localStorage.getItem('muse_watch_target_url');
+    /* ABRIR DIRECTAMENTE TU SESIÓN LOGUEADA */
+    function goToMuseWeb() {
+      haptic(45);
+      // Abre la web donde ya estás logueado en tu reloj
+      window.location.href = "https://muse.ai";
     }
   </script>
 </body>
