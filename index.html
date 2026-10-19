@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Muse Charm Watch Monitor</title>
+  <title>Muse Charm Watch</title>
   <style>
     :root {
       --bg: #000000;
-      --card: #11151f;
-      --card-border: #1f2738;
+      --card: #121622;
+      --card-border: #21293d;
       --muse-cream: #ebd8ba;
       --muse-gold: #f5c469;
       --muse-blue: #1877f2;
@@ -35,7 +35,7 @@
       align-items: center;
       justify-content: flex-start;
       text-align: center;
-      padding: 16px 14px 40px 14px;
+      padding: 18px 14px 45px 14px;
       overflow-x: hidden;
     }
 
@@ -50,7 +50,7 @@
       font-size: 0.58rem;
       font-weight: 800;
       color: #70b4ff;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       text-transform: uppercase;
     }
 
@@ -62,11 +62,12 @@
       box-shadow: 0 0 6px var(--ok);
     }
 
+    /* AVATAR TOUCH */
     .charm-sensor-wrapper {
       position: relative;
       width: 82px;
       height: 82px;
-      margin: 4px auto 6px;
+      margin: 4px auto 8px;
       cursor: pointer;
     }
 
@@ -80,19 +81,18 @@
       align-items: center;
       justify-content: center;
       box-shadow: 0 0 16px rgba(245, 196, 105, 0.3);
-      transition: all 0.2s ease;
+      transition: transform 0.15s ease;
     }
 
     .sensor-ring:active {
-      transform: scale(0.94);
-      box-shadow: 0 0 25px var(--ok);
+      transform: scale(0.93);
       border-color: var(--ok);
     }
 
     .touch-cue {
       position: absolute;
-      bottom: -3px;
-      right: -3px;
+      bottom: -2px;
+      right: -2px;
       width: 24px;
       height: 24px;
       border-radius: 50%;
@@ -104,75 +104,47 @@
       font-size: 0.65rem;
     }
 
-    .connector-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 4px;
-      width: 100%;
-      margin-bottom: 8px;
-    }
-
-    .connector-card {
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 5px 2px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-    }
-
-    .connector-card span.name {
-      font-size: 0.52rem;
-      color: var(--muted);
-      font-weight: bold;
-    }
-
-    .connector-card span.status {
-      font-size: 0.58rem;
-      color: var(--ok);
-      font-weight: 800;
-    }
-
     .display-box {
       width: 100%;
       background: var(--card);
       border: 1px solid var(--card-border);
       border-radius: 14px;
-      padding: 8px 10px;
-      font-size: 0.72rem;
-      line-height: 1.3;
+      padding: 9px 10px;
+      font-size: 0.74rem;
+      line-height: 1.35;
       color: var(--text);
       min-height: 48px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .live-session-btn {
+    /* BOTÓN DIRECTO A LA PÁGINA WEB */
+    .web-btn {
       width: 100%;
       background: linear-gradient(135deg, #1877f2, #0d54b3);
       color: #ffffff;
       border: none;
       border-radius: 18px;
-      padding: 10px 12px;
-      font-size: 0.76rem;
+      padding: 12px 10px;
+      font-size: 0.8rem;
       font-weight: 900;
       cursor: pointer;
       margin-bottom: 8px;
       box-shadow: 0 4px 12px rgba(24, 119, 242, 0.4);
+      display: block;
+      text-decoration: none;
     }
 
-    .live-session-btn:active {
+    .web-btn:active {
       transform: scale(0.96);
     }
 
     .quick-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 5px;
+      gap: 6px;
       width: 100%;
       margin-bottom: 8px;
     }
@@ -182,8 +154,8 @@
       border: 1px solid var(--card-border);
       color: var(--text);
       border-radius: 10px;
-      padding: 7px 4px;
-      font-size: 0.62rem;
+      padding: 8px 4px;
+      font-size: 0.64rem;
       font-weight: 600;
       cursor: pointer;
     }
@@ -193,6 +165,7 @@
       color: var(--muted);
       text-decoration: underline;
       cursor: pointer;
+      margin-top: 4px;
     }
 
     .config-panel {
@@ -230,12 +203,13 @@
 </head>
 <body>
 
-  <div class="sync-pill" onclick="launchMuse()">
+  <div class="sync-pill" onclick="openMuseWeb()">
     <span class="sync-dot"></span>
-    <span id="syncStatus">MUSE AGENT VIVO</span>
+    <span>MUSE WEB ACTIVO</span>
   </div>
 
-  <div class="charm-sensor-wrapper" onclick="triggerCharmTouch()">
+  <!-- AVATAR / ACCESO DIRECTO -->
+  <div class="charm-sensor-wrapper" onclick="openMuseWeb()">
     <div class="sensor-ring" id="sensorRing">
       <svg viewBox="0 0 100 100" width="62" height="62">
         <path d="M22,95 C17,62 26,20 50,20 C74,20 83,62 78,95 Z" fill="#ebd8ba"/>
@@ -246,149 +220,74 @@
         <ellipse cx="50" cy="51" rx="2.5" ry="1.5" fill="#694d3b"/>
       </svg>
     </div>
-    <div class="touch-cue">👆</div>
-  </div>
-
-  <div class="connector-row">
-    <div class="connector-card">
-      <span class="name">NOTION</span>
-      <span class="status">ENLAZADO</span>
-    </div>
-    <div class="connector-card">
-      <span class="name">GITHUB</span>
-      <span class="status">ACTIVO</span>
-    </div>
-    <div class="connector-card">
-      <span class="name">AGENTE</span>
-      <span class="status">LISTO</span>
-    </div>
+    <div class="touch-cue">↗</div>
   </div>
 
   <div class="display-box" id="displayBox">
-    "Listo. Pulsa abajo para abrir tu agente Muse oficial."
+    Toca el botón para abrir la web de tu chat Muse directamente.
   </div>
 
-  <!-- ESTE BOTÓN AHORA ABRE DIRECTAMENTE MUSE.AI / APP MUSE -->
-  <button class="live-session-btn" onclick="launchMuse()">
-    ABRIR MI AGENTE MUSE (MUSE.AI) ↗
+  <!-- BOTÓN DIRECTO QUE SOLO ABRE LA PÁGINA WEB -->
+  <button class="web-btn" onclick="openMuseWeb()">
+    ABRIR WEB DE MUSE ↗
   </button>
 
   <div class="quick-actions">
-    <button class="quick-btn" onclick="askQuickPrompt('¿Cuál es mi plan de tareas y metas para hoy en Muse?')">🎯 Mis Metas</button>
-    <button class="quick-btn" onclick="askQuickPrompt('¿Hay acciones o compras pendientes de mi aprobación?')">🛡️ Aprobaciones</button>
+    <button class="quick-btn" onclick="copyAndOpen('¿Cuáles son mis metas y tareas de hoy en Muse?')">🎯 Ver Metas</button>
+    <button class="quick-btn" onclick="copyAndOpen('Estado general de mis agentes y notificaciones')">📋 Resumen</button>
   </div>
 
-  <div class="config-trigger" onclick="toggleConfig()">Configuración URL de Muse</div>
+  <div class="config-trigger" onclick="toggleConfig()">Editar URL de Destino</div>
 
   <div class="config-panel" id="configPanel">
-    <input type="text" id="chatUrlInput" placeholder="https://muse.ai" value="https://muse.ai">
-    <button onclick="saveChatUrl()">Guardar URL</button>
+    <input type="text" id="targetUrlInput" placeholder="https://muse.ai" value="https://muse.ai">
+    <button onclick="saveTargetUrl()">Guardar</button>
   </div>
 
   <script>
-    const sensorRing = document.getElementById('sensorRing');
-    const displayBox = document.getElementById('displayBox');
-    let latinVoice = null;
+    // URL Web oficial directa
+    const DEFAULT_URL = "https://muse.ai";
 
-    // URL oficial de la plataforma de agentes Muse de Meta
-    const OFFICIAL_MUSE_URL = "https://muse.ai/";
-
-    function getTargetUrl() {
-      return localStorage.getItem('muse_custom_target') || OFFICIAL_MUSE_URL;
-    }
-
-    function haptic(ms = 40) {
+    function haptic(ms = 35) {
       if (navigator.vibrate) navigator.vibrate(ms);
     }
 
-    function initLatinVoice() {
-      if (!('speechSynthesis' in window)) return;
-      const voices = window.speechSynthesis.getVoices();
-      const preferred = ['es-419', 'es-NI', 'es-MX', 'es-US', 'es-CO'];
-      latinVoice = voices.find(v => 
-        preferred.some(code => v.lang.toLowerCase().replace('_', '-').includes(code.toLowerCase()))
-      ) || voices.find(v => v.lang.toLowerCase().startsWith('es') && !v.lang.toLowerCase().includes('es-es'));
+    function getTargetUrl() {
+      return localStorage.getItem('muse_watch_target_url') || DEFAULT_URL;
     }
 
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.onvoiceschanged = initLatinVoice;
-      initLatinVoice();
-    }
-
-    function speakLatin(text) {
-      if (!('speechSynthesis' in window)) return;
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      if (latinVoice) u.voice = latinVoice;
-      u.lang = 'es-419';
-      u.rate = 1.0;
-      window.speechSynthesis.speak(u);
-    }
-
-    /* FUNCIÓN PRINCIPAL DE APERTURA DE MUSE */
-    function launchMuse() {
+    // Navegación web pura, sin intents ni Google Play
+    function openMuseWeb() {
       haptic(50);
-      const target = getTargetUrl();
-      
-      // Si estamos en un dispositivo Android con la app de Muse instalada,
-      // intentará invocar la app oficial de Meta Muse (com.facebook.aura)
-      const isAndroid = /Android/i.test(navigator.userAgent);
-      if (isAndroid && target === OFFICIAL_MUSE_URL) {
-        window.location.href = "intent://#Intent;package=com.facebook.aura;scheme=https;end";
-        // Si no abre la app en 800ms, recurre a la web oficial de Muse
-        setTimeout(() => {
-          window.location.href = OFFICIAL_MUSE_URL;
-        }, 800);
-      } else {
-        window.location.href = target;
-      }
+      window.location.href = getTargetUrl();
     }
 
-    function triggerCharmTouch() {
-      haptic([50, 30, 50]);
-      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const rec = new SpeechRec();
-        rec.lang = 'es-419';
-        rec.onstart = () => { displayBox.textContent = "Escuchando instrucción para Muse..."; };
-        rec.onresult = (e) => {
-          const query = e.results[0][0].transcript;
-          displayBox.textContent = `"${query}"`;
-          if (navigator.clipboard) navigator.clipboard.writeText(query).catch(()=>{});
-          speakLatin("Abriendo Muse con tu orden.");
-          setTimeout(() => { launchMuse(); }, 800);
-        };
-        rec.onerror = () => { launchMuse(); };
-        rec.start();
-      } else {
-        launchMuse();
-      }
-    }
-
-    function askQuickPrompt(prompt) {
+    function copyAndOpen(promptText) {
       haptic(30);
-      displayBox.textContent = prompt;
-      if (navigator.clipboard) navigator.clipboard.writeText(prompt).catch(()=>{});
-      setTimeout(() => { launchMuse(); }, 500);
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(promptText).catch(() => {});
+      }
+      openMuseWeb();
     }
 
     function toggleConfig() {
-      const p = document.getElementById('configPanel');
-      p.style.display = p.style.display === 'block' ? 'none' : 'block';
+      const panel = document.getElementById('configPanel');
+      panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
     }
 
-    function saveChatUrl() {
-      const val = document.getElementById('chatUrlInput').value.trim();
+    function saveTargetUrl() {
+      const val = document.getElementById('targetUrlInput').value.trim();
       if (val) {
-        localStorage.setItem('muse_custom_target', val);
+        localStorage.setItem('muse_watch_target_url', val);
         toggleConfig();
         haptic([30, 40]);
-        displayBox.textContent = "URL guardada.";
+        document.getElementById('displayBox').textContent = "URL actualizada. Listo para entrar.";
       }
     }
 
-    if (localStorage.getItem('muse_custom_target')) {
-      document.getElementById('chatUrlInput').value = localStorage.getItem('muse_custom_target');
+    // Cargar si ya había una personalizada
+    if (localStorage.getItem('muse_watch_target_url')) {
+      document.getElementById('targetUrlInput').value = localStorage.getItem('muse_watch_target_url');
     }
   </script>
 </body>
