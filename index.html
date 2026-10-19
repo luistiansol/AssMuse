@@ -3,28 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#000000">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>Muse Agent Watch</title>
+  <title>Muse Charm Watch</title>
   <style>
     :root {
       --bg: #000000;
       --card: #141720;
-      --card-border: #2a2f3d;
-      --muse-cream: #ead8b8;
-      --muse-cream-light: #f7efe0;
-      --muse-blue: #1877f2;
-      --text: #ffffff;
-      --muted: #9aa4b5;
+      --card-border: #242938;
+      --muse-cream: #ecd8b8;
+      --muse-gold: #f5c76c;
+      --muse-blue: #2d88ff;
+      --muse-glow: rgba(45, 136, 255, 0.35);
+      --text: #f0f3f8;
+      --muted: #8b95a5;
       --ok: #00e676;
-    }
-
-    body.light-muse {
-      --bg: #f4efe6;
-      --card: #ffffff;
-      --card-border: #e2d9c8;
-      --text: #1c1e21;
-      --muted: #65676b;
     }
 
     * {
@@ -38,403 +29,458 @@
     body {
       background-color: var(--bg);
       color: var(--text);
-      font-family: system-ui, -apple-system, sans-serif;
-      padding: 10px 12px 60px 12px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       text-align: center;
+      /* Ajuste especial para pantallas circulares de Galaxy Watch */
+      padding: 24px 18px 40px 18px;
+      overflow-x: hidden;
     }
 
+    /* AVATAR INTERACTIVO */
     .avatar-wrapper {
       position: relative;
-      width: 58px;
-      height: 58px;
-      margin: 4px auto;
+      width: 78px;
+      height: 78px;
+      margin: 6px auto 4px;
       cursor: pointer;
     }
 
     .avatar-circle {
-      width: 58px;
-      height: 58px;
+      width: 78px;
+      height: 78px;
       border-radius: 50%;
-      background: radial-gradient(circle at 50% 35%, #f5f6f8 0%, #dcdfe4 100%);
-      border: 2px solid var(--muse-cream);
+      background: radial-gradient(circle at 50% 35%, #fff1d8 0%, #d8be98 100%);
+      border: 2px solid var(--muse-gold);
       overflow: hidden;
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: center;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 15px var(--muse-glow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .avatar-circle img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: none;
+    /* Estados del Avatar */
+    .avatar-circle.listening {
+      animation: pulse-listen 1.4s infinite alternate;
+      border-color: #00e676;
     }
 
-    .avatar-circle.custom-img svg { display: none; }
-    .avatar-circle.custom-img img { display: block; }
+    .avatar-circle.speaking {
+      animation: pulse-speak 0.7s infinite alternate;
+      border-color: var(--muse-blue);
+    }
+
+    @keyframes pulse-listen {
+      0% { transform: scale(1); box-shadow: 0 0 10px rgba(0, 230, 118, 0.4); }
+      100% { transform: scale(1.08); box-shadow: 0 0 25px rgba(0, 230, 118, 0.8); }
+    }
+
+    @keyframes pulse-speak {
+      0% { transform: scale(1); box-shadow: 0 0 10px var(--muse-blue); }
+      100% { transform: scale(1.06); box-shadow: 0 0 22px var(--muse-blue); }
+    }
+
+    /* Ojos animados */
+    .eye {
+      transform-origin: center;
+      animation: blink 4s infinite ease-in-out;
+    }
+
+    @keyframes blink {
+      0%, 94%, 100% { transform: scaleY(1); }
+      96% { transform: scaleY(0.1); }
+    }
 
     .muse-corner-badge {
       position: absolute;
       bottom: -2px;
       right: -2px;
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
-      background: #ffffff;
-      border: 1.5px solid #e4e6eb;
+      background: #1c202a;
+      border: 1.5px solid var(--muse-gold);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     }
 
     .muse-corner-badge span {
       font-family: Georgia, serif;
       font-style: italic;
       font-weight: 900;
-      font-size: 0.88rem;
-      color: var(--muse-blue);
-      line-height: 1;
+      font-size: 0.85rem;
+      color: var(--muse-gold);
     }
 
-    .title {
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: var(--text);
-      margin-top: 2px;
-    }
-
-    .subtitle-hint {
-      font-size: 0.58rem;
+    .status-text {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
       color: var(--muted);
       margin-bottom: 6px;
     }
 
-    .hw-bar {
+    /* CAJA DE DIÁLOGO / RESPUESTA DE LA IA */
+    .ai-bubble {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 9px 10px;
+      font-size: 0.75rem;
+      line-height: 1.35;
+      color: var(--text);
+      min-height: 48px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    /* BOTÓN PRINCIPAL HABLÁR/ESCUCHAR */
+    .action-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #f7ecd7, var(--muse-cream));
+      color: #171920;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+
+    .action-btn:active { transform: scale(0.96); }
+
+    .action-btn.active {
+      background: #00e676;
+      color: #000;
+    }
+
+    /* ACCIONES RÁPIDAS EN GRID COMPACTO */
+    .quick-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 5px;
       width: 100%;
       margin-bottom: 8px;
     }
 
-    .hw-btn {
+    .quick-btn {
       background: var(--card);
       border: 1px solid var(--card-border);
-      color: var(--muted);
-      border-radius: 12px;
-      padding: 6px 4px;
-      font-size: 0.62rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .hw-btn.active {
-      border-color: var(--ok);
-      color: var(--ok);
-      background: rgba(0, 230, 118, 0.12);
-    }
-
-    .launch-main {
-      width: 100%;
-      background: linear-gradient(135deg, var(--muse-cream-light), var(--muse-cream));
-      color: #1c1e21;
-      border: 2px solid var(--muse-blue);
-      border-radius: 18px;
-      padding: 11px 8px;
-      font-size: 0.82rem;
-      font-weight: 900;
-      box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
-      margin-bottom: 8px;
-      cursor: pointer;
-    }
-
-    .launch-main:active { transform: scale(0.96); }
-
-    .section-label {
-      font-size: 0.62rem;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: var(--muted);
-      margin: 4px 0;
-      width: 100%;
-      text-align: left;
-      padding-left: 4px;
-    }
-
-    .prompt-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      width: 100%;
-      margin-bottom: 8px;
-    }
-
-    .prompt-btn {
-      width: 100%;
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-left: 4px solid var(--muse-cream);
       color: var(--text);
-      border-radius: 12px;
-      padding: 9px 8px;
-      font-size: 0.72rem;
+      border-radius: 10px;
+      padding: 7px 4px;
+      font-size: 0.64rem;
       font-weight: 600;
-      text-align: left;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       cursor: pointer;
     }
 
-    .prompt-btn:active { transform: scale(0.98); background: #1c2230; }
+    .quick-btn:active { background: #202636; }
 
-    .badge {
-      font-size: 0.58rem;
-      background: rgba(24, 119, 242, 0.18);
-      color: var(--muse-blue);
-      padding: 2px 5px;
-      border-radius: 6px;
-      font-weight: 800;
-      white-space: nowrap;
+    /* PANEL CONFIG / API KEY */
+    .drawer {
+      font-size: 0.6rem;
+      color: var(--muted);
+      margin-top: 4px;
+      text-decoration: underline;
+      cursor: pointer;
     }
 
-    .task-box {
+    .config-panel {
+      display: none;
       width: 100%;
-      background: var(--card);
-      border-radius: 12px;
-      padding: 6px;
+      background: #11141d;
       border: 1px solid var(--card-border);
+      padding: 8px;
+      border-radius: 12px;
+      margin-top: 6px;
     }
 
-    .task-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 6px 4px;
-      border-bottom: 1px solid var(--card-border);
-      font-size: 0.7rem;
-      cursor: pointer;
-    }
-
-    .task-item:last-child { border-bottom: none; }
-    .task-item.done span { text-decoration: line-through; color: var(--muted); }
-
-    .toast {
-      position: fixed;
-      bottom: 6%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--muse-blue);
+    .config-panel input {
+      width: 100%;
+      background: #090a0f;
+      border: 1px solid var(--card-border);
       color: #fff;
-      font-weight: 800;
-      font-size: 0.68rem;
-      padding: 5px 10px;
-      border-radius: 16px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-      z-index: 99;
-      white-space: nowrap;
+      padding: 5px;
+      border-radius: 6px;
+      font-size: 0.65rem;
+      margin-bottom: 5px;
+      text-align: center;
     }
 
-    .toast.show { opacity: 1; }
+    .config-panel button {
+      background: var(--muse-blue);
+      border: none;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.62rem;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
 
-  <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
-
-  <div class="avatar-wrapper" onclick="document.getElementById('avatarInput').click()">
-    <div class="avatar-circle" id="avatarContainer">
-      <img id="customAvatarImg" alt="Avatar">
-      <svg viewBox="0 0 100 100" width="54" height="54" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="furGrad" cx="42%" cy="32%" r="60%">
-            <stop offset="0%" stop-color="#fbf3e4"/>
-            <stop offset="55%" stop-color="#e7d4b5"/>
-            <stop offset="100%" stop-color="#c5ab84"/>
-          </radialGradient>
-        </defs>
-        <path d="M22,98 C18,68 25,22 50,22 C75,22 82,68 78,98 Z" fill="url(#furGrad)"/>
-        <circle cx="44" cy="41" r="2.2" fill="#2b2623"/>
-        <circle cx="56" cy="41" r="2.2" fill="#2b2623"/>
-        <ellipse cx="50" cy="46.5" rx="2.5" ry="1.3" fill="#5c4938"/>
+  <!-- AVATAR TIPO MUSE CHARM -->
+  <div class="avatar-wrapper" onclick="toggleListening()">
+    <div class="avatar-circle" id="museAvatar">
+      <svg viewBox="0 0 100 100" width="70" height="70">
+        <!-- Cuerpo esponjoso del personaje -->
+        <path d="M20,95 C15,60 25,18 50,18 C75,18 85,60 80,95 Z" fill="#ecd8b8"/>
+        <!-- Orejitas / detalles -->
+        <circle cx="33" cy="24" r="8" fill="#dfc49c"/>
+        <circle cx="67" cy="24" r="8" fill="#dfc49c"/>
+        <circle cx="33" cy="24" r="5" fill="#f7ecd7"/>
+        <circle cx="67" cy="24" r="5" fill="#f7ecd7"/>
+        <!-- Ojos con parpadeo -->
+        <g class="eye">
+          <circle cx="41" cy="45" r="3.2" fill="#201a16"/>
+          <circle cx="42" cy="44" r="1" fill="#ffffff"/>
+        </g>
+        <g class="eye">
+          <circle cx="59" cy="45" r="3.2" fill="#201a16"/>
+          <circle cx="60" cy="44" r="1" fill="#ffffff"/>
+        </g>
+        <!-- Hocico / Nariz -->
+        <ellipse cx="50" cy="50" rx="2.5" ry="1.6" fill="#694d3b"/>
+        <!-- Sonrisa sutil -->
+        <path d="M47,53 Q50,56 53,53" fill="none" stroke="#694d3b" stroke-width="1.2" stroke-linecap="round"/>
       </svg>
     </div>
     <div class="muse-corner-badge"><span>m</span></div>
   </div>
 
-  <div class="title">Muse</div>
-  <div class="subtitle-hint">meta.ai (Chats Activos)</div>
+  <div class="status-text" id="statusLabel">Toca para hablar</div>
 
-  <div class="hw-bar">
-    <button id="btnFull" class="hw-btn" onclick="toggleFull()">FULL</button>
-    <button id="btnWake" class="hw-btn" onclick="toggleWake()">WAKE</button>
-    <button id="btnTheme" class="hw-btn" onclick="toggleTheme()">TEMA</button>
+  <!-- BUBBLE DE RESPUESTA -->
+  <div class="ai-bubble" id="aiOutput">
+    "Hola, estoy aquí en tu muñeca. ¿Qué necesitas lograr hoy?"
   </div>
 
-  <button class="launch-main" onclick="openMuseAgent()">
-    ABRIR MI AGENTE MUSE
+  <!-- BOTÓN DE VOZ -->
+  <button class="action-btn" id="micBtn" onclick="toggleListening()">
+    <span id="micIcon">🎙️</span>
+    <span id="micText">ESCUCHAR</span>
   </button>
 
-  <div class="section-label">Comandos 1-Toque</div>
-
-  <div class="prompt-grid">
-    <button class="prompt-btn" onclick="copyAndLaunch('Estado actual de tareas y agentes en segundo plano para mi reloj.')">
-      <span>Estado de tarea actual</span>
-      <span class="badge">MUSE</span>
-    </button>
-
-    <button class="prompt-btn" onclick="copyAndLaunch('¿Tienes alguna acción o permiso esperando mi aprobación?')">
-      <span>Aprobaciones pendientes</span>
-      <span class="badge">OK</span>
-    </button>
-
-    <button class="prompt-btn" onclick="copyAndLaunch('Ya completé el paso actual. ¿Cuál es el siguiente paso en Goals?')">
-      <span>Siguiente paso en Goals</span>
-      <span class="badge">GO</span>
-    </button>
+  <!-- ACCIONES RÁPIDAS -->
+  <div class="quick-grid">
+    <button class="quick-btn" onclick="sendQuickPrompt('Dame un consejo motivador y breve para mi día.')">⚡ Motívame</button>
+    <button class="quick-btn" onclick="sendQuickPrompt('¿Cuál es mi siguiente enfoque o hábito clave de hoy?')">🎯 Siguiente paso</button>
+    <button class="quick-btn" onclick="sendQuickPrompt('Respóndeme en una frase: ¿cómo mantengo la calma ahora?')">🧘 Calma 1 min</button>
+    <button class="quick-btn" onclick="clearConversation()">🧹 Limpiar</button>
   </div>
 
-  <div class="section-label">Tareas del Reloj</div>
-  <div class="task-box" id="taskList"></div>
+  <div class="drawer" onclick="toggleConfig()">Configuración IA</div>
 
-  <div id="toast" class="toast">Copiado al portapapeles</div>
+  <div class="config-panel" id="configPanel">
+    <input type="password" id="apiKeyInput" placeholder="API Key (Groq / OpenAI)">
+    <input type="text" id="endpointInput" placeholder="URL Base (Ej: https://api.groq.com/openai/v1)" value="https://api.groq.com/openai/v1">
+    <input type="text" id="modelInput" placeholder="Modelo (Ej: llama-3.1-8b-instant)" value="llama-3.1-8b-instant">
+    <button onclick="saveConfig()">Guardar</button>
+  </div>
 
   <script>
-    // URL directa al chat web autenticado de Meta AI / Muse para recuperar historial y conversaciones previas
-    const MUSE_CHAT_URL = "https://www.meta.ai/";
-    let wakeLock = null;
+    const avatar = document.getElementById('museAvatar');
+    const statusLabel = document.getElementById('statusLabel');
+    const aiOutput = document.getElementById('aiOutput');
+    const micBtn = document.getElementById('micBtn');
+    const micText = document.getElementById('micText');
 
-    const defaultTasks = [
-      { text: "Sesión vinculada con cuenta", done: true },
-      { text: "Verificar estado en reloj", done: false },
-      { text: "Revisar metas del día", done: false }
-    ];
+    let isListening = false;
+    let recognition = null;
 
-    function vibrate(ms = 40) {
+    // Vibración adaptativa para Galaxy Watch
+    function haptic(ms = 35) {
       if (navigator.vibrate) navigator.vibrate(ms);
     }
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 1600);
-    }
+    // Inicializar Voz (Speech Recognition)
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.lang = 'es-ES';
+      recognition.continuous = false;
+      recognition.interimResults = false;
 
-    function handleAvatarUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        localStorage.setItem('muse_custom_avatar', e.target.result);
-        renderAvatar();
-        vibrate(50);
-        showToast('Avatar actualizado');
+      recognition.onstart = () => {
+        isListening = true;
+        haptic([40, 30, 40]);
+        avatar.className = 'avatar-circle listening';
+        micBtn.classList.add('active');
+        micText.textContent = "ESCUCHANDO...";
+        statusLabel.textContent = "Te escucho atentamente...";
       };
-      reader.readAsDataURL(file);
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        processUserMessage(transcript);
+      };
+
+      recognition.onerror = () => {
+        resetUIAfterSpeech();
+        statusLabel.textContent = "No entendí, reintenta";
+      };
+
+      recognition.onend = () => {
+        resetUIAfterSpeech();
+      };
+    } else {
+      micBtn.style.display = 'none';
+      statusLabel.textContent = "Voz no soportada (Usa botones)";
     }
 
-    function renderAvatar() {
-      const saved = localStorage.getItem('muse_custom_avatar');
-      const container = document.getElementById('avatarContainer');
-      const imgEl = document.getElementById('customAvatarImg');
-      if (saved) {
-        imgEl.src = saved;
-        container.classList.add('custom-img');
+    function toggleListening() {
+      if (!recognition) return;
+      if (isListening) {
+        recognition.stop();
       } else {
-        container.classList.remove('custom-img');
-      }
-    }
-
-    function toggleTheme() {
-      vibrate(30);
-      document.body.classList.toggle('light-muse');
-      const isLight = document.body.classList.contains('light-muse');
-      localStorage.setItem('muse_theme_light', isLight ? '1' : '0');
-    }
-
-    function loadTheme() {
-      if (localStorage.getItem('muse_theme_light') === '1') {
-        document.body.classList.add('light-muse');
-      }
-    }
-
-    function toggleFull() {
-      vibrate(30);
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      } else {
-        document.exitFullscreen();
-      }
-    }
-
-    async function toggleWake() {
-      vibrate(30);
-      const btn = document.getElementById('btnWake');
-      if ('wakeLock' in navigator) {
-        if (!wakeLock) {
-          try {
-            wakeLock = await navigator.wakeLock.request('screen');
-            btn.classList.add('active');
-            showToast('Pantalla activa');
-          } catch (e) {}
-        } else {
-          wakeLock.release();
-          wakeLock = null;
-          btn.classList.remove('active');
+        window.speechSynthesis.cancel();
+        try {
+          recognition.start();
+        } catch(e) {
+          recognition.stop();
         }
       }
     }
 
-    function openMuseAgent() {
-      vibrate(50);
-      window.location.href = MUSE_CHAT_URL;
+    function resetUIAfterSpeech() {
+      isListening = false;
+      avatar.className = 'avatar-circle';
+      micBtn.classList.remove('active');
+      micText.textContent = "ESCUCHAR";
+      statusLabel.textContent = "Toca para hablar";
     }
 
-    async function copyAndLaunch(promptText) {
-      vibrate([30, 40, 30]);
-      try {
-        await navigator.clipboard.writeText(promptText);
-        showToast('Copiado. Abriendo...');
-      } catch (err) {}
+    // Respuestas por voz del reloj (Text-To-Speech)
+    function speakText(text) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'es-ES';
+      utterance.rate = 1.05; // Ritmo ágil para el reloj
+      utterance.pitch = 1.1; // Tono ligeramente simpático/Muse
+
+      utterance.onstart = () => {
+        avatar.className = 'avatar-circle speaking';
+        statusLabel.textContent = "Muse hablando...";
+      };
+
+      utterance.onend = () => {
+        avatar.className = 'avatar-circle';
+        statusLabel.textContent = "Listo";
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // NÚCLEO DE INTELIGENCIA ARTIFICIAL
+    async function processUserMessage(userText) {
+      haptic(50);
+      statusLabel.textContent = "Pensando...";
+      aiOutput.textContent = `"${userText}"`;
+
+      const apiKey = localStorage.getItem('muse_api_key');
+      const endpoint = localStorage.getItem('muse_endpoint') || 'https://api.groq.com/openai/v1';
+      const model = localStorage.getItem('muse_model') || 'llama-3.1-8b-instant';
+
+      // 1. SI TIENE API CONFIGURADA: Conexión Real con LLM
+      if (apiKey) {
+        try {
+          const res = await fetch(`${endpoint}/chat/completions`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+              model: model,
+              messages: [
+                {
+                  role: "system",
+                  content: "Eres Muse, un agente de IA empático, perspicaz y minimalista integrado en un reloj inteligente Samsung Watch. Tus respuestas NUNCA deben exceder 2 frases cortas. Sé directo, cálido y enfocado en la acción."
+                },
+                { role: "user", content: userText }
+              ],
+              max_tokens: 60,
+              temperature: 0.7
+            })
+          });
+
+          const data = await res.json();
+          if (data.choices && data.choices[0]) {
+            const reply = data.choices[0].message.content.trim();
+            aiOutput.textContent = reply;
+            speakText(reply);
+            return;
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      // 2. MODO FALLBACK (Si no hay API o falla internet)
       setTimeout(() => {
-        window.location.href = MUSE_CHAT_URL;
+        const fallbackAnswers = [
+          "Recuerda tu meta principal: respira y da el siguiente paso.",
+          "Todo en orden. Estoy monitorizando tu día desde tu muñeca.",
+          "Excelente momento para enfocarte 20 minutos sin distracciones.",
+          "Estoy lista cuando me necesites. Toca el botón para hablar."
+        ];
+        const randomReply = fallbackAnswers[Math.floor(Math.random() * fallbackAnswers.length)];
+        aiOutput.textContent = randomReply;
+        speakText(randomReply);
       }, 500);
     }
 
-    function loadTasks() {
-      const saved = JSON.parse(localStorage.getItem('muse_watch_tasks_v3')) || defaultTasks;
-      const container = document.getElementById('taskList');
-      container.innerHTML = '';
-      saved.forEach((task, idx) => {
-        const row = document.createElement('div');
-        row.className = 'task-item' + (task.done ? ' done' : '');
-        row.onclick = () => toggleTask(idx);
-        row.innerHTML = `<span>${task.text}</span><strong>${task.done ? '✓' : '○'}</strong>`;
-        container.appendChild(row);
-      });
+    function sendQuickPrompt(prompt) {
+      processUserMessage(prompt);
     }
 
-    function toggleTask(index) {
-      vibrate(25);
-      const saved = JSON.parse(localStorage.getItem('muse_watch_tasks_v3')) || defaultTasks;
-      saved[index].done = !saved[index].done;
-      localStorage.setItem('muse_watch_tasks_v3', JSON.stringify(saved));
-      loadTasks();
+    function clearConversation() {
+      haptic(20);
+      window.speechSynthesis.cancel();
+      aiOutput.textContent = "¿En qué te concentrarás ahora?";
+      statusLabel.textContent = "Toca para hablar";
     }
 
-    renderAvatar();
-    loadTheme();
-    loadTasks();
+    function toggleConfig() {
+      const panel = document.getElementById('configPanel');
+      panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function saveConfig() {
+      const key = document.getElementById('apiKeyInput').value.trim();
+      const endpoint = document.getElementById('endpointInput').value.trim();
+      const model = document.getElementById('modelInput').value.trim();
+      if (key) localStorage.setItem('muse_api_key', key);
+      if (endpoint) localStorage.setItem('muse_endpoint', endpoint);
+      if (model) localStorage.setItem('muse_model', model);
+      toggleConfig();
+      haptic([30, 40]);
+      aiOutput.textContent = "Configuración de IA guardada.";
+    }
+
+    // Cargar config guardada
+    if (localStorage.getItem('muse_api_key')) {
+      document.getElementById('apiKeyInput').value = localStorage.getItem('muse_api_key');
+    }
   </script>
 </body>
 </html>
