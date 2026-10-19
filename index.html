@@ -2,20 +2,18 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <!-- Viewport estricto para evitar zoom accidental en el reloj -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Muse Charm Watch</title>
+  <title>Kaly Muse Watch Safe-Frame</title>
   <style>
     :root {
       --bg: #000000;
+      --card: #131722;
+      --card-border: #232c3f;
       --gold: #f5c469;
-      --gold-glow: rgba(245, 196, 105, 0.35);
-      --cream: #ebd8ba;
       --blue: #1877f2;
-      --card: #12151e;
-      --text: #f0f4f8;
-      --muted: #828fa3;
       --ok: #00e676;
+      --text: #ffffff;
+      --muted: #8b97a8;
     }
 
     * {
@@ -26,12 +24,12 @@
       user-select: none;
     }
 
-    /* FORMATO REDONDO EXACTO PARA GALAXY / TIZEN WATCH */
+    /* AJUSTE CIRCULAR OBLIGATORIO PARA GALAXY / TIZEN WATCH */
     html, body {
       width: 100vw;
       height: 100vh;
       overflow: hidden;
-      background-color: var(--bg);
+      background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
@@ -41,321 +39,196 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      /* Margen seguro para que la pantalla redonda no corte los bordes */
-      padding: 8vh 6vw 7vh 6vw;
-      border-radius: 50%;
+      /* Margen seguro: 65px abajo para despejar el micrófono de la curvatura */
+      padding: 12px 14px 62px 14px;
     }
 
-    /* ENCABEZADO MINIMALISTA CIRCULAR */
-    .top-status {
+    /* CABECERA VINCULADA CON KALY */
+    .assistant-header {
       display: flex;
       align-items: center;
-      gap: 5px;
-      font-size: 0.62rem;
+      gap: 6px;
+      margin-top: 4px;
+      background: #141824;
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 3px 10px;
+    }
+
+    .dog-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ecd8ba;
+      border: 1.5px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    .assistant-title {
+      font-size: 0.65rem;
       font-weight: 800;
-      letter-spacing: 0.8px;
       color: var(--gold);
       text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* PANTALLA DE ESTADO COMPACTA */
+    .status-card {
+      width: 90%;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 10px 8px;
+      text-align: center;
+      font-size: 0.72rem;
+      line-height: 1.3;
+      color: var(--text);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    }
+
+    /* BOTÓN GIGANTE DE MICRÓFONO PARA EL PULGAR */
+    .giant-mic-btn {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #2384ff 0%, #0d4fa8 100%);
+      border: 2px solid #5ca5ff;
+      color: #fff;
+      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(24, 119, 242, 0.5);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
       margin-top: 2px;
     }
 
-    .live-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--ok);
-      box-shadow: 0 0 6px var(--ok);
-      animation: pulse-dot 2s infinite alternate;
-    }
-
-    @keyframes pulse-dot {
-      0% { opacity: 0.3; transform: scale(0.8); }
-      100% { opacity: 1; transform: scale(1.2); }
-    }
-
-    /* MASCOTA CHARM CENTRAL CON FÍSICAS */
-    .charm-stage {
-      position: relative;
-      width: 36vw;
-      max-width: 140px;
-      aspect-ratio: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-
-    .charm-body {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: radial-gradient(circle at 50% 30%, #fff4df 0%, #d1b48b 100%);
-      border: 2px solid var(--gold);
-      box-shadow: 0 0 18px var(--gold-glow);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    /* Reacción al tocar (efecto squish) */
-    .charm-body:active, .charm-body.tapped {
-      transform: scale(0.90) scaleY(0.85);
+    .giant-mic-btn:active {
+      transform: scale(0.92);
       box-shadow: 0 0 25px var(--ok);
       border-color: var(--ok);
     }
 
-    .charm-body.speaking {
-      animation: speak-pulse 0.7s infinite alternate ease-in-out;
-      border-color: var(--blue);
+    .giant-mic-btn.listening {
+      animation: mic-pulse 1.2s infinite alternate;
+      border-color: var(--ok);
+      background: radial-gradient(circle at 35% 35%, #00e676 0%, #00994c 100%);
     }
 
-    @keyframes speak-pulse {
-      0% { transform: scale(0.98); box-shadow: 0 0 12px var(--blue); }
-      100% { transform: scale(1.06); box-shadow: 0 0 24px var(--blue); }
+    @keyframes mic-pulse {
+      0% { transform: scale(0.96); box-shadow: 0 0 10px rgba(0, 230, 118, 0.4); }
+      100% { transform: scale(1.08); box-shadow: 0 0 28px rgba(0, 230, 118, 0.9); }
     }
 
-    /* Ojos parpadeantes */
-    .eye {
-      transform-origin: center;
-      animation: blink 4s infinite ease-in-out;
-    }
-
-    @keyframes blink {
-      0%, 94%, 100% { transform: scaleY(1); }
-      96% { transform: scaleY(0.1); }
-    }
-
-    /* Orejitas con balanceo */
-    .ear {
-      animation: ear-wiggle 6s infinite ease-in-out;
-      transform-origin: bottom center;
-    }
-
-    @keyframes ear-wiggle {
-      0%, 90%, 100% { transform: rotate(0deg); }
-      93% { transform: rotate(-6deg); }
-      96% { transform: rotate(6deg); }
-    }
-
-    /* BURBUJA DE DIÁLOGO DINÁMICA ULTRA-COMPACTA */
-    .dialog-pill {
-      width: 84%;
-      background: var(--card);
-      border: 1px solid #1f2638;
-      border-radius: 14px;
-      padding: 6px 10px;
-      font-size: 0.68rem;
-      line-height: 1.25;
-      color: var(--text);
-      text-align: center;
-      min-height: 38px;
+    /* BARRA INFERIOR SEGURA (FUERA DEL CORTE REDONDO) */
+    .bottom-bar {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-    }
-
-    /* CONTROLES CURVADOS INFERIORES */
-    .bottom-dock {
-      display: flex;
-      width: 82%;
       gap: 6px;
+      width: 88%;
       justify-content: center;
-      margin-bottom: 2px;
     }
 
-    .dock-btn {
+    .nav-btn {
       flex: 1;
       background: var(--card);
-      border: 1px solid #232c40;
+      border: 1px solid var(--card-border);
       color: var(--text);
-      border-radius: 16px;
-      padding: 9px 4px;
-      font-size: 0.65rem;
+      border-radius: 12px;
+      padding: 8px 4px;
+      font-size: 0.62rem;
       font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
       cursor: pointer;
     }
 
-    .dock-btn:active {
+    .nav-btn:active {
       background: #1c2438;
-      transform: scale(0.94);
-    }
-
-    .dock-btn.primary {
-      background: linear-gradient(135deg, var(--blue), #0b55b8);
-      border: none;
-      color: #ffffff;
-      flex: 1.3;
-      box-shadow: 0 3px 10px rgba(24, 119, 242, 0.4);
+      transform: scale(0.95);
     }
   </style>
 </head>
 <body>
 
-  <!-- ESTADO DEL CHARM EN LA PARTE SUPERIOR -->
-  <div class="top-status">
-    <span class="live-dot"></span>
-    <span id="statusLabel">MUSE CHARM</span>
+  <!-- CABECERA DE TU ASISTENTE -->
+  <div class="assistant-header">
+    <div class="dog-avatar">🐶</div>
+    <span class="assistant-title">Kaly · Muse</span>
   </div>
 
-  <!-- MASCOTA CHARM INTERACTIVA -->
-  <div class="charm-stage" onclick="pokeCharm()">
-    <div class="charm-body" id="charmBody">
-      <svg viewBox="0 0 100 100" width="80%" height="80%">
-        <!-- Orejas con animación -->
-        <g class="ear">
-          <circle cx="32" cy="22" r="8" fill="#d4b488"/>
-          <circle cx="32" cy="22" r="5" fill="#fcecd2"/>
-        </g>
-        <g class="ear">
-          <circle cx="68" cy="22" r="8" fill="#d4b488"/>
-          <circle cx="68" cy="22" r="5" fill="#fcecd2"/>
-        </g>
-        <!-- Cuerpo esponjoso -->
-        <path d="M20,95 C15,60 25,18 50,18 C75,18 85,60 80,95 Z" fill="#ebd8ba"/>
-        <!-- Ojos con parpadeo -->
-        <g class="eye">
-          <circle cx="41" cy="45" r="3.2" fill="#1e1814"/>
-          <circle cx="42" cy="44" r="1.1" fill="#ffffff"/>
-        </g>
-        <g class="eye">
-          <circle cx="59" cy="45" r="3.2" fill="#1e1814"/>
-          <circle cx="60" cy="44" r="1.1" fill="#ffffff"/>
-        </g>
-        <!-- Nariz / Hocico -->
-        <ellipse cx="50" cy="51" rx="2.5" ry="1.6" fill="#694d3b"/>
-        <!-- Sonrisa sutil -->
-        <path d="M47,54 Q50,57 53,54" fill="none" stroke="#694d3b" stroke-width="1.2" stroke-linecap="round"/>
-      </svg>
-    </div>
+  <!-- ESTADO / COMANDO -->
+  <div class="status-card" id="statusBox">
+    Toca el botón azul para dictarle a Kaly sin tocar el borde.
   </div>
 
-  <!-- BURBUJA DE MENSAJE -->
-  <div class="dialog-pill" id="dialogText">
-    Tocame para hablar o entra al chat web.
+  <!-- BOTÓN DE MICRÓFONO GRANDE Y CENTRADO -->
+  <div class="giant-mic-btn" id="micBtn" onclick="listenToVoice()">
+    🎙️
   </div>
 
-  <!-- BOTONES CURVADOS PARA EL PULGAR -->
-  <div class="bottom-dock">
-    <button class="dock-btn" onclick="listenCharmVoice()">
-      <span>🎙️</span> Hablar
-    </button>
-    <button class="dock-btn primary" onclick="goToMuseWeb()">
-      <span>🌐</span> Abrir Web
+  <!-- BOTONES ELEVADOS FUERA DE LA CURVATURA INFERIOR -->
+  <div class="bottom-bar">
+    <button class="nav-btn" onclick="openFullMuseChat()">
+      ↗ Ver Chat Completo
     </button>
   </div>
 
   <script>
-    const charmBody = document.getElementById('charmBody');
-    const dialogText = document.getElementById('dialogText');
-    const statusLabel = document.getElementById('statusLabel');
-    let latinVoice = null;
+    const statusBox = document.getElementById('statusBox');
+    const micBtn = document.getElementById('micBtn');
 
-    // Vibración corta para simular contacto físico
-    function haptic(ms = 35) {
+    function haptic(ms = 40) {
       if (navigator.vibrate) navigator.vibrate(ms);
     }
 
-    /* FILTRO DE VOZ: ESPAÑOL LATINOAMERICANO */
-    function setupLatinAudio() {
-      if (!('speechSynthesis' in window)) return;
-      const voices = window.speechSynthesis.getVoices();
-      const preferred = ['es-419', 'es-NI', 'es-MX', 'es-US', 'es-CO'];
-      latinVoice = voices.find(v => 
-        preferred.some(code => v.lang.toLowerCase().replace('_', '-').includes(code.toLowerCase()))
-      ) || voices.find(v => 
-        v.lang.toLowerCase().startsWith('es') && !v.lang.toLowerCase().includes('es-es')
-      ) || voices.find(v => v.lang.toLowerCase().startsWith('es'));
-    }
-
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.onvoiceschanged = setupLatinAudio;
-      setupLatinAudio();
-    }
-
-    function speakCharm(text) {
-      if (!('speechSynthesis' in window)) return;
-      window.speechSynthesis.cancel();
-
-      const utter = new SpeechSynthesisUtterance(text);
-      if (latinVoice) utter.voice = latinVoice;
-      utter.lang = 'es-419';
-      utter.rate = 1.05;
-      utter.pitch = 1.15; // Tono ligeramente más amigable / compañero
-
-      utter.onstart = () => charmBody.classList.add('speaking');
-      utter.onend = () => charmBody.classList.remove('speaking');
-
-      window.speechSynthesis.speak(utter);
-    }
-
-    /* INTERACCIÓN TÁCTIL CON EL CHARM */
-    function pokeCharm() {
-      haptic([30, 20, 40]);
-      charmBody.classList.add('tapped');
-      setTimeout(() => charmBody.classList.remove('tapped'), 200);
-
-      const greetings = [
-        "¡Hola! Aquí estoy en tu reloj.",
-        "¿Qué tenemos pendiente para hoy?",
-        "Tus metas de Notion están al día.",
-        "Listo para cuando me ocupes."
-      ];
-      const pick = greetings[Math.floor(Math.random() * greetings.length)];
-      dialogText.textContent = pick;
-      speakCharm(pick);
-    }
-
-    /* HABLAR CON EL CHARM DIRECTO EN EL RELOJ */
-    function listenCharmVoice() {
+    /* RECONOCIMIENTO DE VOZ FÁCIL */
+    function listenToVoice() {
       haptic(50);
+
       if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
         const rec = new SpeechRec();
-        rec.lang = 'es-419';
+        rec.lang = 'es-419'; // Español latino neutro
 
         rec.onstart = () => {
-          statusLabel.textContent = "ESCUCHANDO...";
-          dialogText.textContent = "Te escucho atentamente...";
-          charmBody.classList.add('speaking');
+          micBtn.classList.add('listening');
+          statusBox.textContent = "Te escucho... habla ahora.";
         };
 
         rec.onresult = (e) => {
-          charmBody.classList.remove('speaking');
-          statusLabel.textContent = "MUSE CHARM";
+          micBtn.classList.remove('listening');
           const query = e.results[0][0].transcript;
-          dialogText.textContent = `"${query}"`;
-          haptic([40, 40]);
+          statusBox.textContent = `"${query}"`;
+          haptic([40, 50]);
 
-          // Copia al portapapeles y ofrece entrar a la web
+          // Copiar el texto al portapapeles para pegarlo en un toque
           if (navigator.clipboard) {
-            navigator.clipboard.writeText(query).catch(()=>{});
+            navigator.clipboard.writeText(query).catch(() => {});
           }
-          speakCharm("Entendido. Abriendo tu chat.");
-          setTimeout(() => { goToMuseWeb(); }, 800);
+
+          statusBox.textContent = "Copiado. Abriendo a Kaly...";
+          setTimeout(() => {
+            openFullMuseChat();
+          }, 800);
         };
 
         rec.onerror = () => {
-          charmBody.classList.remove('speaking');
-          statusLabel.textContent = "MUSE CHARM";
-          dialogText.textContent = "No alcancé a oírte bien.";
+          micBtn.classList.remove('listening');
+          statusBox.textContent = "No alcancé a oírte. Reintenta.";
         };
 
         rec.start();
       } else {
-        goToMuseWeb();
+        openFullMuseChat();
       }
     }
 
-    /* ABRIR DIRECTAMENTE TU SESIÓN LOGUEADA */
-    function goToMuseWeb() {
-      haptic(45);
-      // Abre la web donde ya estás logueado en tu reloj
+    /* ABRIR DIRECTAMENTE EL CHAT DE KALY */
+    function openFullMuseChat() {
+      haptic(35);
+      // Abre tu sesión web activa
       window.location.href = "https://muse.ai";
     }
   </script>
